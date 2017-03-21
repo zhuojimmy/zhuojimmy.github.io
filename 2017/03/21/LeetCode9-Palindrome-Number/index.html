@@ -84,25 +84,40 @@
 
 
 
-<meta name="description" content="翻转单链表，一个很经典的问题，有两种截然不同的思路。迭代（Lterative）和递归（Recursive）。
-以下文章翻译自https://leetcode.com/articles/reverse-linked-list/
-lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;∅,我们将这个链表翻转为∅&amp;lt;-1&amp;lt;-2&amp;lt;-3。
-​    当我们遍历这">
+<meta name="description" content="LeetCode9-Palindrome-Number
+�ж�һ��int�Ƿ�Ϊ������������ʹ�ö����Ŀռ䡣
+
+�����ܲ����ǻ�������
+ת��ΪString��ռ�ö����Ŀռ䡣
+��תint�Ļ�������int������
+
+Beta��
+1234567891011121314public class Solution &amp;#123;    public bo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode206_Reverse_Linked_List">
-<meta property="og:url" content="http://yoursite.com/2017/03/21/LeetCode206-Reverse-Linked-List/index.html">
+<meta property="og:title" content="LeetCode9-Palindrome-Number">
+<meta property="og:url" content="http://yoursite.com/2017/03/21/LeetCode9-Palindrome-Number/index.html">
 <meta property="og:site_name" content="jlearning.cn">
-<meta property="og:description" content="翻转单链表，一个很经典的问题，有两种截然不同的思路。迭代（Lterative）和递归（Recursive）。
-以下文章翻译自https://leetcode.com/articles/reverse-linked-list/
-lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;∅,我们将这个链表翻转为∅&amp;lt;-1&amp;lt;-2&amp;lt;-3。
-​    当我们遍历这">
-<meta property="og:updated_time" content="2017-03-21T02:56:56.065Z">
+<meta property="og:description" content="LeetCode9-Palindrome-Number
+�ж�һ��int�Ƿ�Ϊ������������ʹ�ö����Ŀռ䡣
+
+�����ܲ����ǻ�������
+ת��ΪString��ռ�ö����Ŀռ䡣
+��תint�Ļ�������int������
+
+Beta��
+1234567891011121314public class Solution &amp;#123;    public bo">
+<meta property="og:updated_time" content="2017-03-21T07:24:11.557Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LeetCode206_Reverse_Linked_List">
-<meta name="twitter:description" content="翻转单链表，一个很经典的问题，有两种截然不同的思路。迭代（Lterative）和递归（Recursive）。
-以下文章翻译自https://leetcode.com/articles/reverse-linked-list/
-lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;∅,我们将这个链表翻转为∅&amp;lt;-1&amp;lt;-2&amp;lt;-3。
-​    当我们遍历这">
+<meta name="twitter:title" content="LeetCode9-Palindrome-Number">
+<meta name="twitter:description" content="LeetCode9-Palindrome-Number
+�ж�һ��int�Ƿ�Ϊ������������ʹ�ö����Ŀռ䡣
+
+�����ܲ����ǻ�������
+ת��ΪString��ռ�ö����Ŀռ䡣
+��תint�Ļ�������int������
+
+Beta��
+1234567891011121314public class Solution &amp;#123;    public bo">
 
 
 
@@ -130,13 +145,13 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/03/21/LeetCode206-Reverse-Linked-List/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/21/LeetCode9-Palindrome-Number/"/>
 
 
 
 
 
-  <title> LeetCode206_Reverse_Linked_List | jlearning.cn </title>
+  <title> LeetCode9-Palindrome-Number | jlearning.cn </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -247,7 +262,7 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/21/LeetCode206-Reverse-Linked-List/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/21/LeetCode9-Palindrome-Number/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Zhuo Jimmy">
@@ -271,7 +286,7 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
             
             
               
-                LeetCode206_Reverse_Linked_List
+                LeetCode9-Palindrome-Number
               
             
           </h1>
@@ -284,7 +299,7 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-21T09:36:27+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-21T15:23:53+08:00">
                 2017-03-21
               </time>
             
@@ -320,24 +335,25 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
       
 
       
-        <p>翻转单链表，一个很经典的问题，有两种截然不同的思路。迭代（Lterative）和递归（Recursive）。</p>
-<p>以下文章翻译自<a href="https://leetcode.com/articles/reverse-linked-list/" target="_blank" rel="external">https://leetcode.com/articles/reverse-linked-list/</a></p>
-<h3 id="lterative递归"><a href="#lterative递归" class="headerlink" title="lterative递归"></a>lterative递归</h3><p>​    假设我们有一个链表<code>1-&gt;2-&gt;3-&gt;∅</code>,我们将这个链表翻转为<code>∅&lt;-1&lt;-2&lt;-3</code>。</p>
-<p>​    当我们遍历这个链表，改变当前节点的next指针去指向他的前一个元素。由于每个节点不存储他的前向节点，所以你必须要先存储他的前向节点。你还需要在改变他的next指针之前，使用另一个指针去存储他的next节点。不要忘记在最后返回他的新头节点。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</div><div class="line">    ListNode prev = <span class="keyword">null</span>;</div><div class="line">    ListNode curr = head;</div><div class="line">    <span class="keyword">while</span> (curr != <span class="keyword">null</span>) &#123;</div><div class="line">        ListNode nextTemp = curr.next;</div><div class="line">        curr.next = prev;</div><div class="line">        prev = curr;</div><div class="line">        curr = nextTemp;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> prev;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul>
-<li>时间复杂度：$O(n)$</li>
-<li>空间复杂度：$O(1)$</li>
-</ul>
-<h3 id="Recursive迭代"><a href="#Recursive迭代" class="headerlink" title="Recursive迭代"></a>Recursive迭代</h3><p>​    迭代版本有些复杂，关键点在于向后发展。假设链表剩下的部分已经被翻转，现在我们如何翻转前面的部分？让我们假设链表为：<code>n1-&gt;...-&gt;nk-1-&gt;nk-&gt;nk+1-&gt;...-&gt;nm-&gt;∅</code></p>
-<p>​    假设从$n_{k+1}$到$n_m$已经被翻转，现在你处在$n_k$。<code>n1-&gt;...-&gt;nk-1-&gt;nk-&gt;nk+1&lt;-...&lt;-nm</code></p>
-<p>​    我们打算$n_{k+1}$的next指针指向$n_k$，所以:<code>nk.next.next=nk;</code></p>
-<p>​    小心$n_1$的next指针必须要指向∅，如果你忘记了，那么链表中会成一个环。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> head;</div><div class="line">    ListNode p = reverseList(head.next);</div><div class="line">    head.next.next = head;</div><div class="line">    head.next = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">return</span> p;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="复杂度分析-1"><a href="#复杂度分析-1" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul>
-<li>时间复杂度：$O(n)$</li>
-<li>空间复杂度：$O(1)$</li>
-</ul>
+        <p>LeetCode9-Palindrome-Number</p>
+<p>�ж�һ��int�Ƿ�Ϊ������������ʹ�ö����Ŀռ䡣</p>
+<ol>
+<li>�����ܲ����ǻ�������</li>
+<li>ת��ΪString��ռ�ö����Ŀռ䡣</li>
+<li>��תint�Ļ�������int������</li>
+</ol>
+<p>Beta��</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">10</span>&amp;&amp;x&gt;=<span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">int</span> b = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(x&gt;<span class="number">0</span>)&#123;</div><div class="line">            b = b*<span class="number">10</span>+x%<span class="number">10</span>;</div><div class="line">            x = x/<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>����121�жϲ���-&gt;ֻ������ż�����ַ���-&gt;��������������</p>
+<p>���Ӵ��룺</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span>(x&gt;<span class="number">0</span>)&#123;</div><div class="line">            b = b*<span class="number">10</span>+x%<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">            x = x/<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>��������10�жϲ���-&gt;����������0��β-&gt;0��β�Ķ����ǻ�����</p>
+<p>�����жϣ�</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (x&lt;<span class="number">0</span> || (x!=<span class="number">0</span> &amp;&amp; x%<span class="number">10</span>==<span class="number">0</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</div></pre></td></tr></table></figure>
+<p>accepted������ռ����һ��int b�Ķ����ռ䡣</p>
+<p>Solutions:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (x&lt;<span class="number">0</span> || (x!=<span class="number">0</span> &amp;&amp; x%<span class="number">10</span>==<span class="number">0</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">int</span> rev = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (x&gt;rev)&#123;</div><div class="line">    	rev = rev*<span class="number">10</span> + x%<span class="number">10</span>;</div><div class="line">    	x = x/<span class="number">10</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (x==rev || x==rev/<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>����һ���ļ�������</p>
 
       
     </div>
@@ -364,8 +380,8 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/19/LeetCode7-8处理数字溢出/" rel="next" title="LeetCode7,8处理数字溢出">
-                <i class="fa fa-chevron-left"></i> LeetCode7,8处理数字溢出
+              <a href="/2017/03/21/LeetCode206-Reverse-Linked-List/" rel="next" title="LeetCode206_Reverse_Linked_List">
+                <i class="fa fa-chevron-left"></i> LeetCode206_Reverse_Linked_List
               </a>
             
           </div>
@@ -373,10 +389,6 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/21/LeetCode9-Palindrome-Number/" rel="prev" title="LeetCode9-Palindrome-Number">
-                LeetCode9-Palindrome-Number <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -423,17 +435,8 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -483,22 +486,6 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#lterative递归"><span class="nav-number">1.</span> <span class="nav-text">lterative递归</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#复杂度分析"><span class="nav-number">1.1.</span> <span class="nav-text">复杂度分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recursive迭代"><span class="nav-number">2.</span> <span class="nav-text">Recursive迭代</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#复杂度分析-1"><span class="nav-number">2.1.</span> <span class="nav-text">复杂度分析</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
     </div>
@@ -627,26 +614,6 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
   
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
