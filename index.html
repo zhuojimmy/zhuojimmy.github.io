@@ -315,24 +315,24 @@
         
           
             <p>LeetCode9-Palindrome-Number</p>
-<p>�ж�һ��int�Ƿ�Ϊ������������ʹ�ö����Ŀռ䡣</p>
+<p>判断一个int是否为回文数，不能使用额外的空间。</p>
 <ol>
-<li>�����ܲ����ǻ�������</li>
-<li>ת��ΪString��ռ�ö����Ŀռ䡣</li>
-<li>��תint�Ļ�������int������</li>
+<li>负数能不能是回文数？</li>
+<li>转换为String会占用额外的空间。</li>
+<li>翻转int的话会造成int溢出。</li>
 </ol>
-<p>Beta��</p>
+<p>Beta：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">10</span>&amp;&amp;x&gt;=<span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">int</span> b = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(x&gt;<span class="number">0</span>)&#123;</div><div class="line">            b = b*<span class="number">10</span>+x%<span class="number">10</span>;</div><div class="line">            x = x/<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>����121�жϲ���-&gt;ֻ������ż�����ַ���-&gt;��������������</p>
-<p>���Ӵ��룺</p>
+<p>输入121判断不对-&gt;只考虑了偶数个字符数-&gt;分两种情况考虑</p>
+<p>添加代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span>(x&gt;<span class="number">0</span>)&#123;</div><div class="line">            b = b*<span class="number">10</span>+x%<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">            x = x/<span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span>(b==x)&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<p>��������10�жϲ���-&gt;����������0��β-&gt;0��β�Ķ����ǻ�����</p>
-<p>�����жϣ�</p>
+<p>对于输入10判断不对-&gt;不适用于以0结尾-&gt;0结尾的都不是回文数</p>
+<p>添加判断：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (x&lt;<span class="number">0</span> || (x!=<span class="number">0</span> &amp;&amp; x%<span class="number">10</span>==<span class="number">0</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</div></pre></td></tr></table></figure>
-<p>accepted������ռ����һ��int b�Ķ����ռ䡣</p>
+<p>accepted。还是占用了一个int b的额外空间。</p>
 <p>Solutions:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (x&lt;<span class="number">0</span> || (x!=<span class="number">0</span> &amp;&amp; x%<span class="number">10</span>==<span class="number">0</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">int</span> rev = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (x&gt;rev)&#123;</div><div class="line">    	rev = rev*<span class="number">10</span> + x%<span class="number">10</span>;</div><div class="line">    	x = x/<span class="number">10</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (x==rev || x==rev/<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>����һ���ļ�������</p>
+<p>减少一半的计算量。</p>
 
           
         
