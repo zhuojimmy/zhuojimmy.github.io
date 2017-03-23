@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="leetcode,算法," />
+  <meta name="keywords" content="leetcode,算法,反转单链表,链表,迭代,递归," />
 
 
 
@@ -96,7 +96,7 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
 以下文章翻译自https://leetcode.com/articles/reverse-linked-list/
 lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;∅,我们将这个链表翻转为∅&amp;lt;-1&amp;lt;-2&amp;lt;-3。
 ​    当我们遍历这">
-<meta property="og:updated_time" content="2017-03-21T08:18:32.948Z">
+<meta property="og:updated_time" content="2017-03-23T10:12:07.472Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode206_Reverse_Linked_List">
 <meta name="twitter:description" content="翻转单链表，一个很经典的问题，有两种截然不同的思路。迭代（Lterative）和递归（Recursive）。
@@ -199,12 +199,22 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
-            关于
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
           </a>
         </li>
       
@@ -219,12 +229,12 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
         </li>
       
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
-            标签
+            关于
           </a>
         </li>
       
@@ -305,6 +315,24 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
           </span>
 
           
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法题笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">算法题笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -346,7 +374,7 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> head;</div><div class="line">    ListNode p = reverseList(head.next);</div><div class="line">    head.next.next = head;</div><div class="line">    head.next = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">return</span> p;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h4 id="复杂度分析-1"><a href="#复杂度分析-1" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul>
 <li>时间复杂度：$O(n)$</li>
-<li>空间复杂度：$O(1)$</li>
+<li>空间复杂度：$O(n)$</li>
 </ul>
 
       
@@ -374,6 +402,14 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
             <a href="/tags/leetcode/" rel="tag"># leetcode</a>
           
             <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/反转单链表/" rel="tag"># 反转单链表</a>
+          
+            <a href="/tags/链表/" rel="tag"># 链表</a>
+          
+            <a href="/tags/迭代/" rel="tag"># 迭代</a>
+          
+            <a href="/tags/递归/" rel="tag"># 递归</a>
           
         </div>
       
@@ -462,17 +498,24 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
 
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -491,6 +534,15 @@ lterative递归​    假设我们有一个链表1-&amp;gt;2-&amp;gt;3-&amp;gt;�
                     <i class="fa fa-fw fa-weibo"></i>
                   
                   Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhuo_jimmy@yeah.net" target="_blank" title="email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  email
                 </a>
               </span>
             
