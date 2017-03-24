@@ -96,7 +96,7 @@ $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
 $\exists$正常数$c$和$n_0$使得当$N \geq n_0$时，$T(N)\leq cf(N)$,则记为$T(N)=O(f(N))$。
 $\exists$正常数$c$和$n_0$使得当$N \geq n_0$时，$T(N)\geq cf(N)$,则记为$T(N)=\Omega(f(N))$。
 $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
-<meta property="og:updated_time" content="2017-03-23T10:12:49.321Z">
+<meta property="og:updated_time" content="2017-03-24T01:16:03.193Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《数据结构与算法分析》（1）——算法分析">
 <meta name="twitter:description" content="数学理论
@@ -336,6 +336,13 @@ $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/23/《数据结构与算法分析》（1）——算法分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/23/《数据结构与算法分析》（1）——算法分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -378,7 +385,7 @@ $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
 <p>秀分治算法。代码复杂，程序消耗了大量时间初始化变量，赋值等操作。</p>
 <p>时间复杂度：$O(NlogN)$</p>
 <h3 id="评估欧几里德算法的时间复杂度"><a href="#评估欧几里德算法的时间复杂度" class="headerlink" title="评估欧几里德算法的时间复杂度"></a>评估欧几里德算法的时间复杂度</h3><p>算法如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Gcd</span><span class="params">(<span class="keyword">int</span> M, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line">		<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">		<span class="keyword">int</span> rem;</div><div class="line">		<span class="keyword">while</span>(N&gt;<span class="number">0</span>)&#123;</div><div class="line">			rem = M % N;</div><div class="line">			M = N;</div><div class="line">			N = rem;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> M;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Gcd</span><span class="params">(<span class="keyword">int</span> M, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line">  <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">  <span class="keyword">int</span> rem;</div><div class="line">  <span class="keyword">while</span>(N&gt;<span class="number">0</span>)&#123;</div><div class="line">    rem = M % N;</div><div class="line">    M = N;</div><div class="line">    N = rem;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> M;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>$\because M mod N&lt;M/2$</p>
 <p>迭代次数最多是$2logN$，时间复杂度为$O(logN)$。</p>
 <h3 id="评估幂运算的时间复杂度"><a href="#评估幂运算的时间复杂度" class="headerlink" title="评估幂运算的时间复杂度"></a>评估幂运算的时间复杂度</h3><p>算法如下：</p>
@@ -479,6 +486,13 @@ $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
 
           
   <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -716,10 +730,35 @@ $T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T">
 
   
 
+    <script type="text/javascript">
+      var disqus_shortname = 'jlearning';
+      var disqus_identifier = '2017/03/23/《数据结构与算法分析》（1）——算法分析/';
+
+      var disqus_title = "《数据结构与算法分析》（1）——算法分析";
 
 
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
 
-	
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
 
 
 
