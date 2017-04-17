@@ -256,6 +256,188 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/23/《数据结构与算法分析》（1）——算法分析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Zhuo Jimmy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="jlearning.cn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/23/《数据结构与算法分析》（1）——算法分析/" itemprop="url">
+                  《数据结构与算法分析》（1）——算法分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-23T09:31:39+08:00">
+                2017-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="数学理论"><a href="#数学理论" class="headerlink" title="数学理论"></a>数学理论</h3><ul>
+<li>$\exists$正常数$c$和$n_0$使得当$N \geq n_0$时，$T(N)\leq cf(N)$,则记为$T(N)=O(f(N))$。</li>
+<li>$\exists$正常数$c$和$n_0$使得当$N \geq n_0$时，$T(N)\geq cf(N)$,则记为$T(N)=\Omega(f(N))$。</li>
+<li>$T(N) = \Theta(h(N))$当且仅当$T(N)=O(f(N))$且$T(N)=\Omega(f(N))$。</li>
+<li>如果$T(N)=O(f(N))$且$T(N)\not=\Omega(f(N))$,则$T(N)=o(f(N))$。</li>
+</ul>
+<h3 id="如何评估时间复杂度"><a href="#如何评估时间复杂度" class="headerlink" title="如何评估时间复杂度"></a>如何评估时间复杂度</h3><p>***</p>
+<h3 id="一个炸裂的例子"><a href="#一个炸裂的例子" class="headerlink" title="一个炸裂的例子"></a>一个炸裂的例子</h3><p>​    求最大的子序列和——时间复杂度从$O(N^3)$到$O(N^2)$到$O(Nlog(N))$到$O(N)$</p>
+<h4 id="算法一"><a href="#算法一" class="headerlink" title="算法一"></a>算法一</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">msss1</span><span class="params">(<span class="keyword">int</span>[] sequence, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line"></div><div class="line">		<span class="keyword">int</span> ThisSum, MaxSum, i, j, k;</div><div class="line">		</div><div class="line">		MaxSum = <span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;N;i++)&#123;</div><div class="line">			<span class="keyword">for</span>(j=i;j&lt;N;j++)&#123;</div><div class="line">				ThisSum = <span class="number">0</span>;</div><div class="line">				<span class="keyword">for</span>(k=i;k&lt;=j;k++)&#123;</div><div class="line">					ThisSum+=sequence[k];</div><div class="line">				&#125;</div><div class="line">				<span class="keyword">if</span>(ThisSum&gt;MaxSum)&#123;</div><div class="line">					MaxSum = ThisSum;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> MaxSum;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<p>时间复杂度：$O(N^3)$</p>
+<p>最直接的暴力解法。有很多重复计算，比如说<code>1+……+N</code>到<code>1+……+N+N+1</code>只需要加上一个<code>N+1</code>前面的部分不需要重复计算。所以有了算法二。</p>
+<h4 id="算法二"><a href="#算法二" class="headerlink" title="算法二"></a>算法二</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">msss2</span><span class="params">(<span class="keyword">int</span>[] sequence, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line"></div><div class="line">		<span class="keyword">int</span> ThisSum, MaxSum, i, j, k;</div><div class="line">		</div><div class="line">		MaxSum = <span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;N;i++)&#123;</div><div class="line">			ThisSum = <span class="number">0</span>;</div><div class="line">			<span class="keyword">for</span>(j=i;j&lt;N;j++)&#123;</div><div class="line">				ThisSum+=sequence[j];</div><div class="line">				<span class="keyword">if</span>(ThisSum&gt;MaxSum)&#123;</div><div class="line">					MaxSum = ThisSum;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> MaxSum;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<p>时间复杂度：$O(N^2)$</p>
+<h4 id="算法三"><a href="#算法三" class="headerlink" title="算法三"></a>算法三</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">msss4</span><span class="params">(<span class="keyword">int</span>[] A, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> ThisSum, MaxSum, j;</div><div class="line"></div><div class="line">  ThisSum = MaxSum = <span class="number">0</span>;</div><div class="line">  <span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;N;j++)&#123;</div><div class="line">    ThisSum+=A[j];</div><div class="line">    <span class="keyword">if</span>(ThisSum&gt;MaxSum)</div><div class="line">      MaxSum = ThisSum;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ThisSum&lt;<span class="number">0</span>)</div><div class="line">      ThisSum = <span class="number">0</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> MaxSum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>时间复杂度：$O(N)$</p>
+<p>有DP算法的影子，用<code>Maxsum</code>储存到<code>j</code>点的最大序列和。如果$A[j]$是正的，就加上，如果是负的，就不变。因为初始值是0，和小于零，就为0。</p>
+<h4 id="算法四"><a href="#算法四" class="headerlink" title="算法四"></a>算法四</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">msss3</span><span class="params">(<span class="keyword">int</span>[] A, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</div><div class="line">		</div><div class="line">		<span class="keyword">int</span> MaxLeftSum, MaxRightSum;</div><div class="line">		<span class="keyword">int</span> MaxLeftBorderSum, MaxRightBorderSum;</div><div class="line">		<span class="keyword">int</span> LeftBorderSum, RightBorderSum;</div><div class="line">		<span class="keyword">int</span> Center,i;</div><div class="line">		</div><div class="line">		<span class="keyword">if</span>(left==right)</div><div class="line">			<span class="keyword">if</span>(A[left]&gt;<span class="number">0</span>)</div><div class="line">				<span class="keyword">return</span> A[left];</div><div class="line">			<span class="keyword">else</span></div><div class="line">				<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">		</div><div class="line">		Center = (left+right)/<span class="number">2</span>;</div><div class="line">		MaxLeftSum = msss3(A,left,Center);</div><div class="line">		MaxRightSum = msss3(A,Center+<span class="number">1</span>,right);</div><div class="line">		</div><div class="line">		MaxLeftBorderSum = <span class="number">0</span>;</div><div class="line">		LeftBorderSum = <span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(i = Center;i&gt;=left;i--)&#123;</div><div class="line">			LeftBorderSum+=A[i];</div><div class="line">			<span class="keyword">if</span>(LeftBorderSum&gt;MaxLeftBorderSum)</div><div class="line">				MaxLeftBorderSum = LeftBorderSum;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		MaxRightBorderSum = <span class="number">0</span>;</div><div class="line">		RightBorderSum = <span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(i = Center+<span class="number">1</span>;i&lt;=right;i++)&#123;</div><div class="line">			RightBorderSum+=A[i];</div><div class="line">			<span class="keyword">if</span>(RightBorderSum&gt;MaxRightBorderSum)</div><div class="line">				MaxRightBorderSum = RightBorderSum;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		<span class="keyword">return</span> Max3(MaxLeftBorderSum+MaxRightBorderSum,MaxLeftSum,MaxRightSum);</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<p>秀分治算法。代码复杂，程序消耗了大量时间初始化变量，赋值等操作。</p>
+<p>时间复杂度：$O(NlogN)$</p>
+<h3 id="评估欧几里德算法的时间复杂度"><a href="#评估欧几里德算法的时间复杂度" class="headerlink" title="评估欧几里德算法的时间复杂度"></a>评估欧几里德算法的时间复杂度</h3><p>算法如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Gcd</span><span class="params">(<span class="keyword">int</span> M, <span class="keyword">int</span> N)</span> </span>&#123;</div><div class="line">  <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">  <span class="keyword">int</span> rem;</div><div class="line">  <span class="keyword">while</span>(N&gt;<span class="number">0</span>)&#123;</div><div class="line">    rem = M % N;</div><div class="line">    M = N;</div><div class="line">    N = rem;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> M;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>$\because M mod N&lt;M/2$</p>
+<p>迭代次数最多是$2logN$，时间复杂度为$O(logN)$。</p>
+<h3 id="评估幂运算的时间复杂度"><a href="#评估幂运算的时间复杂度" class="headerlink" title="评估幂运算的时间复杂度"></a>评估幂运算的时间复杂度</h3><p>算法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Pow(<span class="keyword">int</span> x,<span class="keyword">int</span> N)&#123;</div><div class="line">  <span class="keyword">if</span>(N==<span class="number">0</span>)</div><div class="line">    <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">  <span class="keyword">if</span>(IsEven(N))</div><div class="line">    <span class="keyword">return</span> Pow(x*x,N/<span class="number">2</span>);</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">return</span> Pow(x*x,N/<span class="number">2</span>)*x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>if</code>语句里，第一种情况用了一个乘法，第二钟情况用了两个乘法。所以最多执行了$2logN$次乘法。</p>
+<p>时间复杂度：$O(logN)$</p>
+<p>另外一种方法：将<code>Pow(x*x,N/2)</code>替换为<code>Pow(x,N/2)*Pow(x,N/2)</code>，求时间复杂度。</p>
+<p>$T(0)=1$</p>
+<p>$T(N)=2*T(N/2)+1$</p>
+<p>$T(2) = 2*T(1)+1=3$</p>
+<p>$T(4)=2*T(2)+1=7$</p>
+<p>$T(8)=2*T(4)+1=15$</p>
+<p>$T(2^k) = 2^{k+1}-1$</p>
+<p>$N = 2^k$ </p>
+<p>$T(N)=2^{logN+1}-1=2N-1=O(N)$</p>
+<h3 id="粗心的使用递归的后果"><a href="#粗心的使用递归的后果" class="headerlink" title="粗心的使用递归的后果"></a>粗心的使用递归的后果</h3><p>幂运算时，不能用<code>Pow(Pow(x,2),N/2)</code>来递归，因为如果<code>N=2</code>那么会产生一个无限循环。</p>
+<hr>
+<p>一个小问题：</p>
+<p>在测试算法过程中写了一段这样的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">long</span> starTime = System.nanoTime();</div><div class="line"><span class="keyword">long</span> endTime1 = System.nanoTime();</div><div class="line"><span class="keyword">long</span> endTime2 = System.nanoTime();</div><div class="line"></div><div class="line">System.out.println(<span class="string">"algorithm1 cost time: "</span>+(endTime1-starTime));</div><div class="line">System.out.println(<span class="string">"algorithm2 cost time: "</span>+(endTime2-endTime1));</div></pre></td></tr></table></figure>
+<p>输出不确定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">algorithm1 cost time: 892</div><div class="line">algorithm2 cost time: 0</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">algorithm1 cost time: 446</div><div class="line">algorithm2 cost time: 0</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">algorithm1 cost time: 0</div><div class="line">algorithm2 cost time: 446</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">//这种情况比较少出现</div><div class="line">algorithm1 cost time: 446</div><div class="line">algorithm2 cost time: 447</div></pre></td></tr></table></figure>
+<p>Why？</p>
+<p>还有，发现<code>System.out.println</code>消耗的时间比一个算法消耗的时间大很多，而且第二次调用<code>System.out.println</code>要比第一次少一个数量级（少数情况出现比第一次还多的情况）。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/LeetCode10-Regular-Expression-Matching/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1259,7 +1441,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
