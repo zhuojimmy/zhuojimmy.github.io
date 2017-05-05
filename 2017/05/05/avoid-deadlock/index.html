@@ -1,0 +1,730 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="并发编程,读书笔记,死锁,活跃性问题," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="为了让并发程序安全，会选择加锁。但是过度、不恰当的加锁会导致“锁顺序死锁”。同样，使用线程池和信号量来限制对资源的使用，这些被限制的行为可能导致“资源死锁”。这一章会主要介绍死锁的分类，主要根据死锁产生的原因进行分类。和如何避免和诊断死锁。最后介绍死锁之外的其他活跃性风险，比如说饥饿等。
+死锁一个资源每次只能被一个人使用（互斥条件），每个人都拥有其他人需要的资源，同时又等待其他人已经拥有的资源（请">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java并发编程实战》读书笔记——避免活跃性问题">
+<meta property="og:url" content="http://yoursite.com/2017/05/05/avoid-deadlock/index.html">
+<meta property="og:site_name" content="jlearning.cn">
+<meta property="og:description" content="为了让并发程序安全，会选择加锁。但是过度、不恰当的加锁会导致“锁顺序死锁”。同样，使用线程池和信号量来限制对资源的使用，这些被限制的行为可能导致“资源死锁”。这一章会主要介绍死锁的分类，主要根据死锁产生的原因进行分类。和如何避免和诊断死锁。最后介绍死锁之外的其他活跃性风险，比如说饥饿等。
+死锁一个资源每次只能被一个人使用（互斥条件），每个人都拥有其他人需要的资源，同时又等待其他人已经拥有的资源（请">
+<meta property="og:updated_time" content="2017-05-05T08:46:23.408Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java并发编程实战》读书笔记——避免活跃性问题">
+<meta name="twitter:description" content="为了让并发程序安全，会选择加锁。但是过度、不恰当的加锁会导致“锁顺序死锁”。同样，使用线程池和信号量来限制对资源的使用，这些被限制的行为可能导致“资源死锁”。这一章会主要介绍死锁的分类，主要根据死锁产生的原因进行分类。和如何避免和诊断死锁。最后介绍死锁之外的其他活跃性风险，比如说饥饿等。
+死锁一个资源每次只能被一个人使用（互斥条件），每个人都拥有其他人需要的资源，同时又等待其他人已经拥有的资源（请">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/05/avoid-deadlock/"/>
+
+
+
+
+
+  <title> 《Java并发编程实战》读书笔记——避免活跃性问题 | jlearning.cn </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">jlearning.cn</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/05/avoid-deadlock/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Zhuo Jimmy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="jlearning.cn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Java并发编程实战》读书笔记——避免活跃性问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-05T16:45:17+08:00">
+                2017-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>为了让并发程序安全，会选择加锁。但是过度、不恰当的加锁会导致“锁顺序死锁”。同样，使用线程池和信号量来限制对资源的使用，这些被限制的行为可能导致“资源死锁”。这一章会主要介绍死锁的分类，主要根据死锁产生的原因进行分类。和如何避免和诊断死锁。最后介绍死锁之外的其他活跃性风险，比如说饥饿等。</p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>一个资源每次只能被一个人使用（互斥条件），每个人都拥有其他人需要的资源，同时又等待其他人已经拥有的资源（请求与保持条件），并且在每个人在获得所有需要的资源之前都不放弃已经拥有的资源（不剥夺条件）。（循环等待）就产生了死锁。</p>
+<h4 id="锁顺序死锁"><a href="#锁顺序死锁" class="headerlink" title="锁顺序死锁"></a>锁顺序死锁</h4><p>两个线程试图用不同的顺序来获得相同的锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeftRightDeadLock</span></span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Object left = <span class="keyword">new</span> Object();</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Object right = <span class="keyword">new</span> Object();</div><div class="line">  </div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">leftRight</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span>(left)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(right)&#123;</div><div class="line">        doSomething();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rightLeft</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span>(right)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(left)&#123;</div><div class="line">        doSomethind();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>要想验证锁顺序的一致性，需要对程序中的加锁行为进行全局分析。</p>
+<h4 id="动态的锁顺序死锁"><a href="#动态的锁顺序死锁" class="headerlink" title="动态的锁顺序死锁"></a>动态的锁顺序死锁</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transferMoney</span><span class="params">(Account fromAccount, Account toAccount, DollarAmount amount)</span></span></div><div class="line">  <span class="keyword">throws</span> InsufficientFundsException&#123;</div><div class="line">    <span class="keyword">synchronized</span>(fromAccount)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(toAccount)&#123;</div><div class="line">        <span class="keyword">if</span>(fromAccount.getBalance().comparaTo(amount)&lt;<span class="number">0</span>)</div><div class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> InsufficientFundsException();</div><div class="line">        <span class="keyword">else</span>&#123;</div><div class="line">          fromAccount.debit(amount);</div><div class="line">          toAccount.credit(amount);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>虽然锁顺序都是先取得<code>fromAccount</code>的锁，在取得<code>toAccount</code>的锁，但是事实上上锁的顺序取决于传递给函数的参数的顺序。</p>
+<p>这种死锁可以通过制定锁的顺序来解决。使用<code>System.identityHashCode</code>方法，每次先获得<code>hashCode</code>小的那个对象的锁：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object tieLock = <span class="keyword">new</span> Object();</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transferMonet</span><span class="params">(<span class="keyword">final</span> Account fromAcct,<span class="keyword">final</span> Account toAcct, <span class="keyword">final</span> DollarAmount amount)</span> <span class="keyword">throws</span> insufficientFundsException</span>&#123;</div><div class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Helper</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span> <span class="keyword">throws</span> InsufficientFundsException</span>&#123;</div><div class="line">      <span class="keyword">if</span>(fromAcct.getBalance().comparaTo(amount)&lt;<span class="number">0</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> insufficientFundsException();</div><div class="line">      <span class="keyword">else</span>&#123;</div><div class="line">        fromAcct.debit(amount);</div><div class="line">        toAcct.credit(amount);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">int</span> fromHash = System.identityHashCode(fromAcct);</div><div class="line">  <span class="keyword">int</span> toHash = System.identityHashCode(toAcct);</div><div class="line">  </div><div class="line">  <span class="keyword">if</span>(fromHash&lt;toHash)&#123;</div><div class="line">    <span class="keyword">synchronized</span>(fromAcct)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(toAcct)&#123;</div><div class="line">        <span class="keyword">new</span> Helper().transfer();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(from Hash&gt;toHash)&#123;</div><div class="line">    <span class="keyword">synchronized</span>(toAcct)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(fromAcct)&#123;</div><div class="line">        <span class="keyword">new</span> Helper().transfer();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;<span class="keyword">else</span>&#123;</div><div class="line">    <span class="comment">//极少数的情况下，两个对象拥有相同的散列值，此时通过另一个锁保证每次只有一个线程以位置的顺序获得这两个锁。如果经常出先散列冲突的情况，这个地方因为相当于给整个程序加一个锁，会成为性能瓶颈。</span></div><div class="line">    <span class="keyword">synchronized</span>(tieLock)&#123;</div><div class="line">      <span class="keyword">synchronized</span>(toAcct)&#123;</div><div class="line">        <span class="keyword">synchronized</span>(fromAcct)&#123;</div><div class="line">          <span class="keyword">new</span> Helper().transfer();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果每个账户都包含唯一不可变的可比的键值，会更简单，不用比较散列值。</p>
+<h4 id="在协作对象之间发生的死锁"><a href="#在协作对象之间发生的死锁" class="headerlink" title="在协作对象之间发生的死锁"></a>在协作对象之间发生的死锁</h4><p>在持有锁的情况下调用某个外部方法，这个外部方法中可能会获取其他锁。可能会像锁顺序死锁一样。</p>
+<h4 id="开放调用"><a href="#开放调用" class="headerlink" title="开放调用"></a>开放调用</h4><p>如果在调用某个方法时不需要持有锁，那么这种调用被称为开放调用。</p>
+<p>使用同步代码块仅被用于保护那些设计共享状态的操作。</p>
+<h4 id="资源死锁"><a href="#资源死锁" class="headerlink" title="资源死锁"></a>资源死锁</h4><p>如果某些任务需要等待其他任务的结果，妈么这些任务往往是产生线程饥饿死锁的主要来源。</p>
+<h3 id="死锁的避免与诊断"><a href="#死锁的避免与诊断" class="headerlink" title="死锁的避免与诊断"></a>死锁的避免与诊断</h3><p>如果程序每次最多只获得一个锁，那么就不会发生死锁。但是不现实。所以应该在设计时考虑锁的顺序，尽量减少潜在的加锁交互数量。</p>
+<p>两阶段策略（Two-Part Strategy）：</p>
+<ul>
+<li>找出在什么地方将获取多个锁。</li>
+<li>多所有这些实例进行全局分析，确保他们在整个程序中获取锁的顺序都是一致的。</li>
+</ul>
+<h4 id="支持定时的锁"><a href="#支持定时的锁" class="headerlink" title="支持定时的锁"></a>支持定时的锁</h4><p>显式使用Lock类中的定时tryLock功能来代替内置锁机制。显式锁可以指定一个超时时限，等待超过该事件后会返回一个失败信息。</p>
+<h4 id="通过线程转储（Thread-Dump）信息来分析死锁"><a href="#通过线程转储（Thread-Dump）信息来分析死锁" class="headerlink" title="通过线程转储（Thread Dump）信息来分析死锁"></a>通过线程转储（Thread Dump）信息来分析死锁</h4><h3 id="其他活跃性问题"><a href="#其他活跃性问题" class="headerlink" title="其他活跃性问题"></a>其他活跃性问题</h3><h4 id="饥饿"><a href="#饥饿" class="headerlink" title="饥饿"></a>饥饿</h4><p>当前线程由于无法访问它需要的资源而不能继续执行，就发生了饥饿。最典型的是由于错误的使用线程优先级，导致获取不到CPU时钟周期。</p>
+<h4 id="糟糕的响应性"><a href="#糟糕的响应性" class="headerlink" title="糟糕的响应性"></a>糟糕的响应性</h4><p>CPU密集型后台任务与事件线程竞争CPU的时钟周期，从而影响响应性。</p>
+<p>可以通过降低后台任务的优先级解决这个问题。</p>
+<h4 id="活锁"><a href="#活锁" class="headerlink" title="活锁"></a>活锁</h4><p>错误的将不可修复的错误作为可修复的错误，导致如果不能成功处理某个消息，那么就回滚并重新放到队列开头，反复调用返回相同的结果。</p>
+<p>当多个相互协作的线程都对彼此进行响应从而修改各自的状态，并使得任何一个线程都无法继续执行。就发生了活锁。</p>
+<p>需要在重试机制中引入随机性。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/并发编程/" rel="tag"># 并发编程</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/死锁/" rel="tag"># 死锁</a>
+          
+            <a href="/tags/活跃性问题/" rel="tag"># 活跃性问题</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/04/difference-between-tf-Variable-and-tf-get-variable/" rel="next" title="TensorFlow——tf.Variable和tf.get_variable()的区别">
+                <i class="fa fa-chevron-left"></i> TensorFlow——tf.Variable和tf.get_variable()的区别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzkwNS80NDgy"></div>
+    
+  </div>
+
+    
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Zhuo Jimmy" />
+          <p class="site-author-name" itemprop="name">Zhuo Jimmy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2116491901" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhuo_jimmy@yeah.net" target="_blank" title="email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">1.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#锁顺序死锁"><span class="nav-number">1.0.1.</span> <span class="nav-text">锁顺序死锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态的锁顺序死锁"><span class="nav-number">1.0.2.</span> <span class="nav-text">动态的锁顺序死锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在协作对象之间发生的死锁"><span class="nav-number">1.0.3.</span> <span class="nav-text">在协作对象之间发生的死锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开放调用"><span class="nav-number">1.0.4.</span> <span class="nav-text">开放调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资源死锁"><span class="nav-number">1.0.5.</span> <span class="nav-text">资源死锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁的避免与诊断"><span class="nav-number">1.1.</span> <span class="nav-text">死锁的避免与诊断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持定时的锁"><span class="nav-number">1.1.1.</span> <span class="nav-text">支持定时的锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过线程转储（Thread-Dump）信息来分析死锁"><span class="nav-number">1.1.2.</span> <span class="nav-text">通过线程转储（Thread Dump）信息来分析死锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他活跃性问题"><span class="nav-number">1.2.</span> <span class="nav-text">其他活跃性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#饥饿"><span class="nav-number">1.2.1.</span> <span class="nav-text">饥饿</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#糟糕的响应性"><span class="nav-number">1.2.2.</span> <span class="nav-text">糟糕的响应性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#活锁"><span class="nav-number">1.2.3.</span> <span class="nav-text">活锁</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhuo Jimmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
