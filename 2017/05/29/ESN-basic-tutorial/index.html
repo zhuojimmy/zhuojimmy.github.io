@@ -94,17 +94,17 @@ ESN是RN">
 <meta property="og:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
 由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
 ESN是RN">
-<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png">
-<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529170125.png">
-<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172248.png">
-<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172425.png">
-<meta property="og:updated_time" content="2017-05-29T09:31:07.580Z">
+<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529170125.png">
+<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172248.png">
+<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172425.png">
+<meta property="og:updated_time" content="2017-05-29T09:35:56.456Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="回声状态网络（ESN）基础教程">
 <meta name="twitter:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
 由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
 ESN是RN">
-<meta name="twitter:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+<meta name="twitter:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
 
 
 
@@ -363,7 +363,7 @@ ESN是RN">
         <p>最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。</p>
 <p>由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。</p>
 <p>ESN是RNN的一种，也是由输入层，隐藏层，输出层组成，并且在隐藏层到隐藏层之间有一个连接，用来保留前面时刻留下的信息。不同于RNN，ESN的输入层到隐藏层、隐藏层到隐藏层的连接权值是随机初始化，并且固定不变。在训练的过程中，我们只需要去训练隐藏层到输出层的连接权值。这就变成了一个线性回归问题，所以ESN训练起来非常快。</p>
-<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png" alt="微信截图_20170529161715"></p>
+<p><img src="\images\ESN-basic-tutorial\微信截图_20170529161715.png" alt="微信截图_20170529161715"></p>
 <p>ESN的神经网络如图所示，储备池就是常规神经网络中的隐藏层。输入层到储备池的连接为$W<em>{in}$，储备池到下一个时刻储备池状态的连接为$W$，储备池到输出层的连接为$W</em>{out}$。另外还有一个前一时刻的输出层到下一个时刻的储备池的连接$W_{back}$，这个连接不是必须的（图中用虚线表示），由于这是一个入门级的基础教程，所以在后面的公式和例子代码中都不会涉及这一个连接。</p>
 <p>图中所示，$t$时刻的输入为$u(t)$，一共K个节点，储备池状态为$x(t)$，N个节点，输出为$y(t)$，L个节点。</p>
 <p>每一个时刻输入$u(t)$，储备池都会更新状态，储备池的状态更新方式为：</p>
@@ -373,7 +373,7 @@ ESN是RN">
 <p>回声状态网络的输出方式为：</p>
 <p>$$y(t)=W_{out}[1;u(t);x(t)]$$</p>
 <p>有了储备池状态，再确定了ESN的输出方式之后，就可以根据目标输出$y^{target}$来确定$W_{out}$来让$y(t)$和$y^{target}(t)$的差距尽可能的小。这是一个简单的线性回归问题，计算的方法有很多种，不再赘述。</p>
-<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529170125.png" alt="微信截图_20170529170125"></p>
+<p><img src="\images\ESN-basic-tutorial\微信截图_20170529170125.png" alt="微信截图_20170529170125"></p>
 <p>到这里，我们就完成了ESN的训练工作。整个网络只需要训练$W_{out}$，所以它的训练过程非常快，这是ESN的优点之一。另外，对于一维时序数列的处理和预测，ESN有很好的优势。但对于高维的时序数列，比如说视频帧处理，ESN就不太能胜任了。</p>
 <p>为了让这个网络能够正常的运转，还有一些地方是需要注意的：</p>
 <ol>
@@ -390,10 +390,10 @@ ESN是RN">
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="string">"""</span></div><div class="line">A minimalistic Echo State Networks demo with Mackey-Glass (delay 17) data </div><div class="line">in "plain" scientific Python.</div><div class="line">by Mantas LukoĹĄeviÄ?ius 2012</div><div class="line">http://minds.jacobs-university.de/mantas</div><div class="line">"""</div><div class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> *</div><div class="line"><span class="keyword">from</span> matplotlib.pyplot <span class="keyword">import</span> *</div><div class="line"><span class="keyword">import</span> scipy.linalg</div><div class="line"></div><div class="line"><span class="comment"># load the data</span></div><div class="line"><span class="comment">#前2000个数据用来训练，2001-4000的数据用来测试。训练数据中，前100项用来初始化储备池，以让储备池中形成良好的回声之后再开始训练。</span></div><div class="line">trainLen = <span class="number">2000</span></div><div class="line">testLen = <span class="number">2000</span></div><div class="line">initLen = <span class="number">100</span></div><div class="line"></div><div class="line">data = loadtxt(<span class="string">'MackeyGlass_t17.txt'</span>)</div><div class="line"></div><div class="line"><span class="comment"># plot some of it</span></div><div class="line">figure(<span class="number">10</span>).clear()</div><div class="line">plot(data[<span class="number">0</span>:<span class="number">1000</span>])</div><div class="line">title(<span class="string">'A sample of data'</span>)</div><div class="line"></div><div class="line"><span class="comment"># generate the ESN reservoir</span></div><div class="line">inSize = outSize = <span class="number">1</span></div><div class="line">resSize = <span class="number">1000</span></div><div class="line">a = <span class="number">0.3</span> <span class="comment"># leaking rate 可以看作储备池更新的速度，可不不加，即设为1.</span></div><div class="line"></div><div class="line">random.seed(<span class="number">42</span>)</div><div class="line"><span class="comment">#随机初始化 Win 和 W</span></div><div class="line">Win = (random.rand(resSize,<span class="number">1</span>+inSize)<span class="number">-0.5</span>) * <span class="number">1</span></div><div class="line">W = random.rand(resSize,resSize)<span class="number">-0.5</span> </div><div class="line"><span class="comment">#对W进行防缩，以满足稀疏的要求。</span></div><div class="line"><span class="comment"># Option 1 - direct scaling (quick&amp;dirty, reservoir-specific):</span></div><div class="line"><span class="comment">#W *= 0.135 </span></div><div class="line"><span class="comment"># Option 2 - normalizing and setting spectral radius (correct, slow):</span></div><div class="line"><span class="keyword">print</span> <span class="string">'Computing spectral radius...'</span>,</div><div class="line">rhoW = max(abs(linalg.eig(W)[<span class="number">0</span>]))</div><div class="line"><span class="keyword">print</span> <span class="string">'done.'</span></div><div class="line">W *= <span class="number">1.25</span> / rhoW</div><div class="line"></div><div class="line"><span class="comment"># allocated memory for the design (collected states) matrix</span></div><div class="line">X = zeros((<span class="number">1</span>+inSize+resSize,trainLen-initLen))</div><div class="line"><span class="comment"># set the corresponding target matrix directly</span></div><div class="line">Yt = data[<span class="keyword">None</span>,initLen+<span class="number">1</span>:trainLen+<span class="number">1</span>] </div><div class="line"></div><div class="line"><span class="comment">#输入所有的训练数据，然后得到每一时刻的输入值和储备池状态。</span></div><div class="line"><span class="comment"># run the reservoir with the data and collect X </span></div><div class="line">x = zeros((resSize,<span class="number">1</span>))</div><div class="line"><span class="keyword">for</span> t <span class="keyword">in</span> range(trainLen):</div><div class="line">    u = data[t]</div><div class="line">    x = (<span class="number">1</span>-a)*x + a*tanh( dot( Win, vstack((<span class="number">1</span>,u)) ) + dot( W, x ) )</div><div class="line">    <span class="keyword">if</span> t &gt;= initLen:</div><div class="line">        X[:,t-initLen] = vstack((<span class="number">1</span>,u,x))[:,<span class="number">0</span>]</div><div class="line"></div><div class="line"><span class="comment">#使用Wout根据输入值和储备池状态去拟合目标值，这是一个简单的线性回归问题，这里使用的是岭回归(Ridge Regression)。</span></div><div class="line"><span class="comment"># train the output</span></div><div class="line">reg = <span class="number">1e-8</span>  <span class="comment"># regularization coefficient</span></div><div class="line">X_T = X.T</div><div class="line">Wout = dot( dot(Yt,X_T), linalg.inv( dot(X,X_T) + \</div><div class="line">    reg*eye(<span class="number">1</span>+inSize+resSize) ) )</div><div class="line"><span class="comment">#Wout = dot( Yt, linalg.pinv(X) )</span></div><div class="line"></div><div class="line"><span class="comment">#使用训练数据进行前向处理得到结果</span></div><div class="line"><span class="comment"># run the trained ESN in a generative mode. no need to initialize here, </span></div><div class="line"><span class="comment"># because x is initialized with training data and we continue from there.</span></div><div class="line">Y = zeros((outSize,testLen))</div><div class="line">u = data[trainLen]</div><div class="line"><span class="keyword">for</span> t <span class="keyword">in</span> range(testLen):</div><div class="line">    x = (<span class="number">1</span>-a)*x + a*tanh( dot( Win, vstack((<span class="number">1</span>,u)) ) + dot( W, x ) )</div><div class="line">    y = dot( Wout, vstack((<span class="number">1</span>,u,x)) )</div><div class="line">    Y[:,t] = y</div><div class="line">    <span class="comment"># generative mode:生成模型</span></div><div class="line">    u = y</div><div class="line">    <span class="comment">## this would be a predictive mode:预测模型</span></div><div class="line">    <span class="comment">#u = data[trainLen+t+1] </span></div><div class="line"></div><div class="line"><span class="comment"># compute MSE for the first errorLen time steps</span></div><div class="line">errorLen = <span class="number">500</span></div><div class="line">mse = sum( square( data[trainLen+<span class="number">1</span>:trainLen+errorLen+<span class="number">1</span>] - Y[<span class="number">0</span>,<span class="number">0</span>:errorLen] ) ) / errorLen</div><div class="line"><span class="keyword">print</span> <span class="string">'MSE = '</span> + str( mse )</div><div class="line">    </div><div class="line"><span class="comment"># plot some signals</span></div><div class="line">figure(<span class="number">1</span>).clear()</div><div class="line">plot( data[trainLen+<span class="number">1</span>:trainLen+testLen+<span class="number">1</span>], <span class="string">'g'</span> )</div><div class="line">plot( Y.T, <span class="string">'b'</span> )</div><div class="line">title(<span class="string">'Target and generated signals $y(n)$ starting at $n=0$'</span>)</div><div class="line">legend([<span class="string">'Target signal'</span>, <span class="string">'Free-running predicted signal'</span>])</div><div class="line"></div><div class="line">figure(<span class="number">2</span>).clear()</div><div class="line">plot( X[<span class="number">0</span>:<span class="number">20</span>,<span class="number">0</span>:<span class="number">200</span>].T )</div><div class="line">title(<span class="string">'Some reservoir activations $\mathbf&#123;x&#125;(n)$'</span>)</div><div class="line"></div><div class="line">figure(<span class="number">3</span>).clear()</div><div class="line">bar( range(<span class="number">1</span>+inSize+resSize), Wout.T )</div><div class="line">title(<span class="string">'Output weights $\mathbf&#123;W&#125;^&#123;out&#125;$'</span>)</div><div class="line"></div><div class="line">show()</div></pre></td></tr></table></figure>
 <p>实验结果是再生成模型的情况下，最后得到的均方差为 2.3*10^-5。</p>
 <p>生成的结果与测试结果对比图：</p>
-<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172248.png" alt="微信截图_20170529172248"></p>
+<p><img src="\images\ESN-basic-tutorial\微信截图_20170529172248.png" alt="微信截图_20170529172248"></p>
 <p>再预测模型中，均方差为6.95*10^-8。</p>
 <p>预测值与真实值的对比图为：</p>
-<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172425.png" alt="微信截图_20170529172425"></p>
+<p><img src="\images\ESN-basic-tutorial\微信截图_20170529172425.png" alt="微信截图_20170529172425"></p>
 <p>效果还是肥肠好的！</p>
 <p>参考文献：</p>
 <p>[1] Jaeger H. The “echo state” approach to analysing and training recurrent neural networks-with an erratum note[J]. Bonn, Germany: German National Research Center for Information Technology GMD Technical Report, 2001, 148(34): 13.</p>
@@ -715,6 +715,26 @@ ESN是RN">
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
