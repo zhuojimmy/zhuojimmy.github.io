@@ -98,7 +98,7 @@ ESN是RN">
 <meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529170125.png">
 <meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172248.png">
 <meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172425.png">
-<meta property="og:updated_time" content="2017-05-29T09:35:56.456Z">
+<meta property="og:updated_time" content="2017-05-29T09:39:23.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="回声状态网络（ESN）基础教程">
 <meta name="twitter:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
@@ -364,7 +364,7 @@ ESN是RN">
 <p>由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。</p>
 <p>ESN是RNN的一种，也是由输入层，隐藏层，输出层组成，并且在隐藏层到隐藏层之间有一个连接，用来保留前面时刻留下的信息。不同于RNN，ESN的输入层到隐藏层、隐藏层到隐藏层的连接权值是随机初始化，并且固定不变。在训练的过程中，我们只需要去训练隐藏层到输出层的连接权值。这就变成了一个线性回归问题，所以ESN训练起来非常快。</p>
 <p><img src="\images\ESN-basic-tutorial\微信截图_20170529161715.png" alt="微信截图_20170529161715"></p>
-<p>ESN的神经网络如图所示，储备池就是常规神经网络中的隐藏层。输入层到储备池的连接为$W<em>{in}$，储备池到下一个时刻储备池状态的连接为$W$，储备池到输出层的连接为$W</em>{out}$。另外还有一个前一时刻的输出层到下一个时刻的储备池的连接$W_{back}$，这个连接不是必须的（图中用虚线表示），由于这是一个入门级的基础教程，所以在后面的公式和例子代码中都不会涉及这一个连接。</p>
+<p>ESN的神经网络如图所示，储备池就是常规神经网络中的隐藏层。输入层到储备池的连接为$W<em>{in}$，储备池到下一个时刻储备池状态的连接为W，储备池到输出层的连接为​$W</em>{out}$。另外还有一个前一时刻的输出层到下一个时刻的储备池的连接$W_{back}$，这个连接不是必须的（图中用虚线表示），由于这是一个入门级的基础教程，所以在后面的公式和例子代码中都不会涉及这一个连接。</p>
 <p>图中所示，$t$时刻的输入为$u(t)$，一共K个节点，储备池状态为$x(t)$，N个节点，输出为$y(t)$，L个节点。</p>
 <p>每一个时刻输入$u(t)$，储备池都会更新状态，储备池的状态更新方式为：</p>
 <p>$$x(t+1)=f(W_{in}u(t+1)+Wx(t))$$</p>
