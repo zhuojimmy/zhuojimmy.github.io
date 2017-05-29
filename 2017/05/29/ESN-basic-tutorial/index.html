@@ -1,0 +1,729 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ESN,回声状态网络,机器学习,深度学习,原创," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
+由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
+ESN是RN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回声状态网络（ESN）基础教程">
+<meta property="og:url" content="http://yoursite.com/2017/05/29/ESN-basic-tutorial/index.html">
+<meta property="og:site_name" content="jlearning.cn">
+<meta property="og:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
+由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
+ESN是RN">
+<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529170125.png">
+<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172248.png">
+<meta property="og:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172425.png">
+<meta property="og:updated_time" content="2017-05-29T09:31:07.580Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="回声状态网络（ESN）基础教程">
+<meta name="twitter:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
+由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
+ESN是RN">
+<meta name="twitter:image" content="http://yoursite.com/D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/29/ESN-basic-tutorial/"/>
+
+
+
+
+
+  <title> 回声状态网络（ESN）基础教程 | jlearning.cn </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">jlearning.cn</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/29/ESN-basic-tutorial/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Zhuo Jimmy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="jlearning.cn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                回声状态网络（ESN）基础教程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-29T17:29:34+08:00">
+                2017-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。</p>
+<p>由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。</p>
+<p>ESN是RNN的一种，也是由输入层，隐藏层，输出层组成，并且在隐藏层到隐藏层之间有一个连接，用来保留前面时刻留下的信息。不同于RNN，ESN的输入层到隐藏层、隐藏层到隐藏层的连接权值是随机初始化，并且固定不变。在训练的过程中，我们只需要去训练隐藏层到输出层的连接权值。这就变成了一个线性回归问题，所以ESN训练起来非常快。</p>
+<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529161715.png" alt="微信截图_20170529161715"></p>
+<p>ESN的神经网络如图所示，储备池就是常规神经网络中的隐藏层。输入层到储备池的连接为$W<em>{in}$，储备池到下一个时刻储备池状态的连接为$W$，储备池到输出层的连接为$W</em>{out}$。另外还有一个前一时刻的输出层到下一个时刻的储备池的连接$W_{back}$，这个连接不是必须的（图中用虚线表示），由于这是一个入门级的基础教程，所以在后面的公式和例子代码中都不会涉及这一个连接。</p>
+<p>图中所示，$t$时刻的输入为$u(t)$，一共K个节点，储备池状态为$x(t)$，N个节点，输出为$y(t)$，L个节点。</p>
+<p>每一个时刻输入$u(t)$，储备池都会更新状态，储备池的状态更新方式为：</p>
+<p>$$x(t+1)=f(W_{in}u(t+1)+Wx(t))$$</p>
+<p>这个式子里，$W_{in}$和$W$都是在最初建立网络的时候随机初始化的，并且固定不变。$u(t+1)$是这个时刻的输入，$x(t)$是上一个时刻的储备池状态，在t=0时刻可以用0初始化。$f$是一个激活函数，通常使用$tanh$。</p>
+<p>在建模的时候，和一般的神经网络一样，会在连接矩阵上加上一个偏置量，所以输入的$u$是一个长度为1+K的向量，$W_{in}$是一个[1+k,N]的矩阵，$x$是一个长度为N的向量，$W$是一个[N,N]的矩阵。</p>
+<p>回声状态网络的输出方式为：</p>
+<p>$$y(t)=W_{out}[1;u(t);x(t)]$$</p>
+<p>有了储备池状态，再确定了ESN的输出方式之后，就可以根据目标输出$y^{target}$来确定$W_{out}$来让$y(t)$和$y^{target}(t)$的差距尽可能的小。这是一个简单的线性回归问题，计算的方法有很多种，不再赘述。</p>
+<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529170125.png" alt="微信截图_20170529170125"></p>
+<p>到这里，我们就完成了ESN的训练工作。整个网络只需要训练$W_{out}$，所以它的训练过程非常快，这是ESN的优点之一。另外，对于一维时序数列的处理和预测，ESN有很好的优势。但对于高维的时序数列，比如说视频帧处理，ESN就不太能胜任了。</p>
+<p>为了让这个网络能够正常的运转，还有一些地方是需要注意的：</p>
+<ol>
+<li>之所以叫回声状态网络，是因为前面时刻输入的信息会通过$W$回回荡在储备池中，就像回声一样。为了避免储备池状态爆炸，$W$的特征值必须要小于等于1。这也就引入了ESN中<code>谱半径</code>的概念：$W$的最大特征值。</li>
+<li>由于网络中只有$W_{out}$是可变的，为了尽可能多的表示不同的数据规律，$W$必须要设置的非常大，才能从中找出各种不同的特征进行输出。另一方面，$W$的稀疏性也很重要，Hinton在多伦多大学的公开课里解释是：</li>
+</ol>
+<blockquote>
+<p>建立一个松散的连接，这样某一信息可以在网络中的一小部分回荡，而不会迅速的传播到其他部分。</p>
+</blockquote>
+<p>我不是特别的理解。希望有人解释一下。</p>
+<p>最后引用<a href="http://minds.jacobs-university.de/mantas/code" target="_blank" rel="external">一个例子</a>来彻底理解最基本的ESN。</p>
+<p>在页面中下载python源码和数据集，在python2.7环境中运行。</p>
+<p>数据就是一维的，代码中每次输入长度为1，预测数据中后一位的值，当然长度也是1。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="string">"""</span></div><div class="line">A minimalistic Echo State Networks demo with Mackey-Glass (delay 17) data </div><div class="line">in "plain" scientific Python.</div><div class="line">by Mantas LukoĹĄeviÄ?ius 2012</div><div class="line">http://minds.jacobs-university.de/mantas</div><div class="line">"""</div><div class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> *</div><div class="line"><span class="keyword">from</span> matplotlib.pyplot <span class="keyword">import</span> *</div><div class="line"><span class="keyword">import</span> scipy.linalg</div><div class="line"></div><div class="line"><span class="comment"># load the data</span></div><div class="line"><span class="comment">#前2000个数据用来训练，2001-4000的数据用来测试。训练数据中，前100项用来初始化储备池，以让储备池中形成良好的回声之后再开始训练。</span></div><div class="line">trainLen = <span class="number">2000</span></div><div class="line">testLen = <span class="number">2000</span></div><div class="line">initLen = <span class="number">100</span></div><div class="line"></div><div class="line">data = loadtxt(<span class="string">'MackeyGlass_t17.txt'</span>)</div><div class="line"></div><div class="line"><span class="comment"># plot some of it</span></div><div class="line">figure(<span class="number">10</span>).clear()</div><div class="line">plot(data[<span class="number">0</span>:<span class="number">1000</span>])</div><div class="line">title(<span class="string">'A sample of data'</span>)</div><div class="line"></div><div class="line"><span class="comment"># generate the ESN reservoir</span></div><div class="line">inSize = outSize = <span class="number">1</span></div><div class="line">resSize = <span class="number">1000</span></div><div class="line">a = <span class="number">0.3</span> <span class="comment"># leaking rate 可以看作储备池更新的速度，可不不加，即设为1.</span></div><div class="line"></div><div class="line">random.seed(<span class="number">42</span>)</div><div class="line"><span class="comment">#随机初始化 Win 和 W</span></div><div class="line">Win = (random.rand(resSize,<span class="number">1</span>+inSize)<span class="number">-0.5</span>) * <span class="number">1</span></div><div class="line">W = random.rand(resSize,resSize)<span class="number">-0.5</span> </div><div class="line"><span class="comment">#对W进行防缩，以满足稀疏的要求。</span></div><div class="line"><span class="comment"># Option 1 - direct scaling (quick&amp;dirty, reservoir-specific):</span></div><div class="line"><span class="comment">#W *= 0.135 </span></div><div class="line"><span class="comment"># Option 2 - normalizing and setting spectral radius (correct, slow):</span></div><div class="line"><span class="keyword">print</span> <span class="string">'Computing spectral radius...'</span>,</div><div class="line">rhoW = max(abs(linalg.eig(W)[<span class="number">0</span>]))</div><div class="line"><span class="keyword">print</span> <span class="string">'done.'</span></div><div class="line">W *= <span class="number">1.25</span> / rhoW</div><div class="line"></div><div class="line"><span class="comment"># allocated memory for the design (collected states) matrix</span></div><div class="line">X = zeros((<span class="number">1</span>+inSize+resSize,trainLen-initLen))</div><div class="line"><span class="comment"># set the corresponding target matrix directly</span></div><div class="line">Yt = data[<span class="keyword">None</span>,initLen+<span class="number">1</span>:trainLen+<span class="number">1</span>] </div><div class="line"></div><div class="line"><span class="comment">#输入所有的训练数据，然后得到每一时刻的输入值和储备池状态。</span></div><div class="line"><span class="comment"># run the reservoir with the data and collect X </span></div><div class="line">x = zeros((resSize,<span class="number">1</span>))</div><div class="line"><span class="keyword">for</span> t <span class="keyword">in</span> range(trainLen):</div><div class="line">    u = data[t]</div><div class="line">    x = (<span class="number">1</span>-a)*x + a*tanh( dot( Win, vstack((<span class="number">1</span>,u)) ) + dot( W, x ) )</div><div class="line">    <span class="keyword">if</span> t &gt;= initLen:</div><div class="line">        X[:,t-initLen] = vstack((<span class="number">1</span>,u,x))[:,<span class="number">0</span>]</div><div class="line"></div><div class="line"><span class="comment">#使用Wout根据输入值和储备池状态去拟合目标值，这是一个简单的线性回归问题，这里使用的是岭回归(Ridge Regression)。</span></div><div class="line"><span class="comment"># train the output</span></div><div class="line">reg = <span class="number">1e-8</span>  <span class="comment"># regularization coefficient</span></div><div class="line">X_T = X.T</div><div class="line">Wout = dot( dot(Yt,X_T), linalg.inv( dot(X,X_T) + \</div><div class="line">    reg*eye(<span class="number">1</span>+inSize+resSize) ) )</div><div class="line"><span class="comment">#Wout = dot( Yt, linalg.pinv(X) )</span></div><div class="line"></div><div class="line"><span class="comment">#使用训练数据进行前向处理得到结果</span></div><div class="line"><span class="comment"># run the trained ESN in a generative mode. no need to initialize here, </span></div><div class="line"><span class="comment"># because x is initialized with training data and we continue from there.</span></div><div class="line">Y = zeros((outSize,testLen))</div><div class="line">u = data[trainLen]</div><div class="line"><span class="keyword">for</span> t <span class="keyword">in</span> range(testLen):</div><div class="line">    x = (<span class="number">1</span>-a)*x + a*tanh( dot( Win, vstack((<span class="number">1</span>,u)) ) + dot( W, x ) )</div><div class="line">    y = dot( Wout, vstack((<span class="number">1</span>,u,x)) )</div><div class="line">    Y[:,t] = y</div><div class="line">    <span class="comment"># generative mode:生成模型</span></div><div class="line">    u = y</div><div class="line">    <span class="comment">## this would be a predictive mode:预测模型</span></div><div class="line">    <span class="comment">#u = data[trainLen+t+1] </span></div><div class="line"></div><div class="line"><span class="comment"># compute MSE for the first errorLen time steps</span></div><div class="line">errorLen = <span class="number">500</span></div><div class="line">mse = sum( square( data[trainLen+<span class="number">1</span>:trainLen+errorLen+<span class="number">1</span>] - Y[<span class="number">0</span>,<span class="number">0</span>:errorLen] ) ) / errorLen</div><div class="line"><span class="keyword">print</span> <span class="string">'MSE = '</span> + str( mse )</div><div class="line">    </div><div class="line"><span class="comment"># plot some signals</span></div><div class="line">figure(<span class="number">1</span>).clear()</div><div class="line">plot( data[trainLen+<span class="number">1</span>:trainLen+testLen+<span class="number">1</span>], <span class="string">'g'</span> )</div><div class="line">plot( Y.T, <span class="string">'b'</span> )</div><div class="line">title(<span class="string">'Target and generated signals $y(n)$ starting at $n=0$'</span>)</div><div class="line">legend([<span class="string">'Target signal'</span>, <span class="string">'Free-running predicted signal'</span>])</div><div class="line"></div><div class="line">figure(<span class="number">2</span>).clear()</div><div class="line">plot( X[<span class="number">0</span>:<span class="number">20</span>,<span class="number">0</span>:<span class="number">200</span>].T )</div><div class="line">title(<span class="string">'Some reservoir activations $\mathbf&#123;x&#125;(n)$'</span>)</div><div class="line"></div><div class="line">figure(<span class="number">3</span>).clear()</div><div class="line">bar( range(<span class="number">1</span>+inSize+resSize), Wout.T )</div><div class="line">title(<span class="string">'Output weights $\mathbf&#123;W&#125;^&#123;out&#125;$'</span>)</div><div class="line"></div><div class="line">show()</div></pre></td></tr></table></figure>
+<p>实验结果是再生成模型的情况下，最后得到的均方差为 2.3*10^-5。</p>
+<p>生成的结果与测试结果对比图：</p>
+<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172248.png" alt="微信截图_20170529172248"></p>
+<p>再预测模型中，均方差为6.95*10^-8。</p>
+<p>预测值与真实值的对比图为：</p>
+<p><img src="D:\code space\node\myBlog\source\images\ESN-basic-tutorial\微信截图_20170529172425.png" alt="微信截图_20170529172425"></p>
+<p>效果还是肥肠好的！</p>
+<p>参考文献：</p>
+<p>[1] Jaeger H. The “echo state” approach to analysing and training recurrent neural networks-with an erratum note[J]. Bonn, Germany: German National Research Center for Information Technology GMD Technical Report, 2001, 148(34): 13.</p>
+<p>[2] Lukoševičius M. A practical guide to applying echo state networks[M]//Neural networks: Tricks of the trade. Springer Berlin Heidelberg, 2012: 659-686.</p>
+<p>[3] 罗熊, 黎江, 孙增圻. 回声状态网络的研究进展[J]. 北京科技大学学报, 2012, 34(2):217-222.</p>
+<p>[4] <a href="http://minds.jacobs-university.de/mantas/code" target="_blank" rel="external">http://minds.jacobs-university.de/mantas/code</a></p>
+<p>[5] <a href="https://zh.coursera.org/learn/neural-networks/lecture/s1bdp/echo-state-networks-9-min" target="_blank" rel="external">https://zh.coursera.org/learn/neural-networks/lecture/s1bdp/echo-state-networks-9-min</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ESN/" rel="tag"># ESN</a>
+          
+            <a href="/tags/回声状态网络/" rel="tag"># 回声状态网络</a>
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/原创/" rel="tag"># 原创</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/27/java-Integer-Object-Compare/" rel="next" title="Java中Integer类的三种初始化方式和在逻辑运算上的区别">
+                <i class="fa fa-chevron-left"></i> Java中Integer类的三种初始化方式和在逻辑运算上的区别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzkwNS80NDgy"></div>
+    
+  </div>
+
+    
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Zhuo Jimmy" />
+          <p class="site-author-name" itemprop="name">Zhuo Jimmy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2116491901" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhuo_jimmy@yeah.net" target="_blank" title="email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhuo Jimmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
