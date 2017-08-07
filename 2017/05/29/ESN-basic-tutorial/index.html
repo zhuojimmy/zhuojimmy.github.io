@@ -89,22 +89,22 @@
 ESN是RN">
 <meta property="og:type" content="article">
 <meta property="og:title" content="回声状态网络（ESN）基础教程">
-<meta property="og:url" content="http://yoursite.com/2017/05/29/ESN-basic-tutorial/index.html">
+<meta property="og:url" content="http://learning.com/2017/05/29/ESN-basic-tutorial/index.html">
 <meta property="og:site_name" content="jlearning.cn">
 <meta property="og:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
 由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
 ESN是RN">
-<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
-<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529170125.png">
-<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172248.png">
-<meta property="og:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529172425.png">
+<meta property="og:image" content="http://learning.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+<meta property="og:image" content="http://learning.com/\images\ESN-basic-tutorial\微信截图_20170529170125.png">
+<meta property="og:image" content="http://learning.com/\images\ESN-basic-tutorial\微信截图_20170529172248.png">
+<meta property="og:image" content="http://learning.com/\images\ESN-basic-tutorial\微信截图_20170529172425.png">
 <meta property="og:updated_time" content="2017-05-29T09:42:37.594Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="回声状态网络（ESN）基础教程">
 <meta name="twitter:description" content="最近在看回声状态网络（Echo State Network）的内容，注意到中文搜索引擎搜不到关于有关Echo State Network通俗的讲解，打算写一下关于ESN的一个基本教程。本文先用一小段简单介绍ESN是什么，然后用公式来表示这种网络，并说明他的优缺点，最后用一个可执行的简单例子来演示一下ESN的效果。
 由于本人能力有限，如在阅读过程中有任何疑问或者发现错误请在评论中指出。
 ESN是RN">
-<meta name="twitter:image" content="http://yoursite.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
+<meta name="twitter:image" content="http://learning.com/\images\ESN-basic-tutorial\微信截图_20170529161715.png">
 
 
 
@@ -132,7 +132,7 @@ ESN是RN">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/29/ESN-basic-tutorial/"/>
+  <link rel="canonical" href="http://learning.com/2017/05/29/ESN-basic-tutorial/"/>
 
 
 
@@ -146,6 +146,16 @@ ESN是RN">
   
 
 
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f69738a703f95d25fd5649f5b3d51e51";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -269,7 +279,7 @@ ESN是RN">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/29/ESN-basic-tutorial/">
+  <link itemprop="mainEntityOfPage" href="http://learning.com/2017/05/29/ESN-basic-tutorial/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Zhuo Jimmy">
@@ -343,6 +353,15 @@ ESN是RN">
           
 
           
+          
+             <span id="/2017/05/29/ESN-basic-tutorial/" class="leancloud_visitors" data-flag-title="回声状态网络（ESN）基础教程">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
           
 
           
@@ -739,6 +758,113 @@ ESN是RN">
 
 
   
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("HFHaSh6qpS4jVESzHUkGA3wi-gzGzoHsz", "5zRJEDM6Mbkh4tIGz0kaI6Vl");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
 
   
 
