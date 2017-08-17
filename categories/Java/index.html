@@ -353,7 +353,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -370,7 +370,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">48</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -402,11 +402,11 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="https://www.douban.com/people/49178609/" target="_blank" title="douban">
+                <a href="https://www.douban.com/people/49178609/" target="_blank" title="����">
                   
                     <i class="fa fa-fw fa-globe"></i>
                   
-                  douban
+                  ����
                 </a>
               </span>
             
@@ -670,6 +670,39 @@
               success: function(newcounter) {
                 var $element = $(document.getElementById(url));
                 $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
+.text(newcounter.get('time'));
               },
               error: function(newcounter, error) {
                 console.log('Failed to create');

@@ -286,6 +286,212 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://learning.com/2017/05/03/Usage-of-ThreadPool/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Zhuo Jimmy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="jlearning.cn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/03/Usage-of-ThreadPool/" itemprop="url">
+                  《Java并发编程实战》读书笔记——线程池的使用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-03T20:15:35+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/05/03/Usage-of-ThreadPool/" class="leancloud_visitors" data-flag-title="《Java并发编程实战》读书笔记——线程池的使用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="任务与执行策略之间的隐形耦合"><a href="#任务与执行策略之间的隐形耦合" class="headerlink" title="任务与执行策略之间的隐形耦合"></a>任务与执行策略之间的隐形耦合</h3><p>Executor可以将生产者和消费者解耦，但是不是所有的任务<em>都适用所有的执行策略</em>，有些类型的任务需要<em>明确地指定执行策略</em>。</p>
+<ol>
+<li><strong>依赖性任务</strong>: 如果一个任务是独立的，改变线程池的大小和配置只会影响性能。如果需要以来其他的任务，那么必须小心的维持这些执行策略以避免产生<em>活跃性</em>问题。</li>
+<li><strong>使用线程封闭机制的任务</strong>：单线程的Executor能对并发性做出更强的承诺。如果将Executor从单线程环境改为线程池环境，那么将会失去线程安全性。</li>
+<li><strong>对相应时间敏感的task</strong>：比如说GUI处理用户操作的task。</li>
+<li><strong>使用了ThreadLocal类的task</strong>：只有当线程本地值的生命周期受限于任务的生命周期时，在线程池的线程中使用ThreadLocal才有意义。ThreadLocal让每个线程都拥有某个变量的私有版本与线程池重用线程相矛盾。</li>
+</ol>
+<p>只有当任务都是同类型，并且相互独立时，线程池的性能才能达到最佳。</p>
+<ul>
+<li>如果运行时间较长和较短的任务混合在一起，可能造成“拥塞”</li>
+<li>如果任务依赖于其他任务，可能造成“死锁”</li>
+</ul>
+<h4 id="线程饥饿死锁"><a href="#线程饥饿死锁" class="headerlink" title="线程饥饿死锁"></a>线程饥饿死锁</h4><p>所有正在执行的任务都由于等待其他人处于工作队列中的任务而阻塞，这种现象被称为线程饥饿死锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadDeadlock</span></span>&#123;</div><div class="line">  <span class="comment">//这里的newSingleThreadExecutor()方法返回的线程池只包含单个线程</span></div><div class="line">  ExecutorService exec = Executors.newSingleThreadExecutor();</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RenderPageTask</span> <span class="title">implement</span> <span class="title">Callable</span>&lt;<span class="title">String</span>&gt;</span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Execptioin</span>&#123;</div><div class="line">      Future&lt;String&gt; header, footer;</div><div class="line">      headr = exec.submit(<span class="keyword">new</span> loadFileTask(<span class="string">"header.html"</span>));</div><div class="line">      footer = exec.submit(<span class="keyword">new</span> loadFileTask(<span class="string">"footer.html"</span>));</div><div class="line">      String page = renderBody();</div><div class="line">      <span class="comment">//这里的get将会死锁。</span></div><div class="line">      <span class="keyword">return</span> header.get()+page+footer.get();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了显式的限制，还有一些情况也会发生死锁：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StarvationDeadLock</span> </span>&#123;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;  </div><div class="line">        <span class="keyword">final</span> ExecutorService executor = Executors.newFixedThreadPool(<span class="number">3</span>);  </div><div class="line">        <span class="comment">// 设定await在Barrier对象上的线程数达到4个时, 其await方法才释放  </span></div><div class="line">        <span class="keyword">final</span> CyclicBarrier barrier = <span class="keyword">new</span> CyclicBarrier(<span class="number">4</span>);  </div><div class="line">          </div><div class="line">        <span class="comment">// 重复提交4个task, 每个task都await在barrier对象上  </span></div><div class="line">        <span class="comment">// barrier的await方法将一直阻塞, 直到4个线程都到达await点.  </span></div><div class="line">        <span class="comment">// 但是线程池中只有3个线程, 不可能出现4个线程都达到await点的情形, 所以依然会发生死锁  </span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;  </div><div class="line">            executor.submit(<span class="keyword">new</span> Runnable() &#123;  </div><div class="line">                <span class="meta">@Override</span>  </div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">                    <span class="keyword">try</span> &#123;  </div><div class="line">                        System.out.println(<span class="string">"waiting for other tasks arriving at common point"</span>);  </div><div class="line">                        barrier.await();  </div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;  </div><div class="line">                        Thread.currentThread().interrupt();  </div><div class="line">                    &#125; <span class="keyword">catch</span> (BrokenBarrierException e) &#123;  </div><div class="line">                        e.printStackTrace();  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="运行时长较长的任务"><a href="#运行时长较长的任务" class="headerlink" title="运行时长较长的任务"></a>运行时长较长的任务</h4><p>线程池中线程的数量应该多于稳定状态下执行较长时长任务的数量。</p>
+<p>限定任务等待资源的时间：平台类库中的大多数可阻塞方法中，都同时定义了限时版本和无限时版本，例如<code>Thread.join</code>,<code>BlockingQueue.put</code>.<code>CountDownLatch.await</code>,<code>Selector.select</code>等。如果等待超时，可以把任务标识为失败，终止或者重新放回队列。</p>
+<h3 id="设置线程池的大小"><a href="#设置线程池的大小" class="headerlink" title="设置线程池的大小"></a>设置线程池的大小</h3><ul>
+<li>计算环境：cpu</li>
+<li>资源预算：内存</li>
+<li>任务的特性：计算密集型还是IO密集型，是否需要JDBC连接这样的稀缺资源。</li>
+</ul>
+<p>如果需要执行不同类别并且行为相差较大的任务，可以考虑使用多个线程池。</p>
+<p>对于计算密集型task, 合适的size大约为CPU数量+1.</p>
+<p>IO密集型task，size = CPU数量 <em> CPU利用率 </em> (1 + 等待时间和计算时间的比例)。</p>
+<p>内存等：每个任务对该资源的需求量除资源总量，就是线程池大小的上限。</p>
+<h3 id="配置ThradPoolExecutor"><a href="#配置ThradPoolExecutor" class="headerlink" title="配置ThradPoolExecutor"></a>配置ThradPoolExecutor</h3><p>ThreadPoolExecutor通用构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(</span></span></div><div class="line">                         //线程的基本大小，没有任务执行时的大小。</div><div class="line">                         <span class="keyword">int</span> corePoolSize,</div><div class="line">                         <span class="keyword">int</span> maximumPoolSize,//最大大小</div><div class="line">						 //存活时间，超过标记为可回收。</div><div class="line">                         <span class="keyword">long</span> keepAliveTime,</div><div class="line">                         TimeUnit unit,</div><div class="line">                         BlockingQueue&lt;Runnable&gt; workQueue,</div><div class="line">                         ThreadFactory threadFactory,</div><div class="line">                         RejectedExecutionHandler handler)&#123;……&#125;</div></pre></td></tr></table></figure>
+<h4 id="线程的创建和销毁"><a href="#线程的创建和销毁" class="headerlink" title="线程的创建和销毁"></a>线程的创建和销毁</h4><ul>
+<li>newCachedThreadPool 最大大小设定为<code>Integer.Max_Value</code>，基本大小为0，超时为1分钟</li>
+<li>newFixedThreadPool  基本大小和最大大小设定为指定的值，而且创建的线程池不会超时</li>
+<li>newScheduledThreadExecutor 核心线程数由调用方指定, 最大线程数为Integer.MAX_VALUE, 超时时间为0  </li>
+</ul>
+<h4 id="管理队列任务"><a href="#管理队列任务" class="headerlink" title="管理队列任务"></a>管理队列任务</h4><ul>
+<li><strong>无界队列</strong>：newFixedThreadPoll和newSingleThreadExecutor在默认情况下将使用一个无界的<code>LinkedBlockingQueue</code>。</li>
+<li><strong>有界队列</strong>：<code>ArrayBlockingQueue</code>，有界的<code>LinkedBlockingQueue</code> <code>PriorityBlockingQueue</code>。在队列填满后，使用饱和策略解决。队列的大小必须和线程池的大小一起调节，如果线程池小队列大，会限制吞吐量。</li>
+<li><strong>同步移交</strong>（Synchronous Handoff）： 对于非常大或者无界的线程池，使用<code>SynchronousQueue</code>来避免任务排队，直接将任务从生产者移交给消费者线程。线程池无界或者可以拒绝任务时，<code>SynchronousQWueue</code>才有实际价值，在<code>newCachedThreadPool</code>工厂方法就使用了<code>SynchronousQueue</code>。</li>
+</ul>
+<h4 id="饱和策略"><a href="#饱和策略" class="headerlink" title="饱和策略"></a>饱和策略</h4><p>在有界队列填满之后，饱和策略开始发挥作用。ThreadPoolExecutor的饱和策略通过<code>setRejectedExecutionHandler</code>来修改。</p>
+<ul>
+<li>Abort Policy：抛出未检查的<code>RejectedExecutioniException</code>，调用者可以捕获这个异常，然后根据需求编写处理代码。</li>
+<li>Caller-Runs Policy：将某些任务回退到调用者，从而降低新任务的流量。在提交task的线程中执行task，从而提交task的线程就不能提交task，当这一层的请求队列被填满后，再向上蔓延，一直达到客户端，实现一种平缓的性能降低。</li>
+<li>Discard policy：抛弃该任务</li>
+<li>Discard Oldest Policy：抛弃下一个将被执行的任务，然后尝试重新提交新的任务。（如果使用优先队列，那么将抛弃优先级最高的）</li>
+</ul>
+<h4 id="线程工厂"><a href="#线程工厂" class="headerlink" title="线程工厂"></a>线程工厂</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThreadFactory</span> <span class="keyword">implements</span> <span class="title">ThreadFactory</span></span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String poolName;</div><div class="line">  </div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MyThreadFactory</span><span class="params">(String poolName)</span></span>&#123;</div><div class="line">    <span class="keyword">this</span>.poolName = poolName;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="function"><span class="keyword">public</span> Thread <span class="title">newThread</span><span class="params">(Runnable runnable)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MyAppThread(runnable, pollName);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThreadFactory</span> <span class="keyword">implements</span> <span class="title">ThreadFactory</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String poolName;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">MyThreadFactory</span><span class="params">(String poolName)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.poolName = poolName;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> Thread <span class="title">newThread</span><span class="params">(Runnable runnable)</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> MyAppThread(runnable, poolName);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAppThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_NAME = <span class="string">"MyAppThread"</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> debugLifecycle = <span class="keyword">false</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> AtomicInteger created = <span class="keyword">new</span> AtomicInteger();</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> AtomicInteger alive = <span class="keyword">new</span> AtomicInteger();</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = Logger.getAnonymousLogger();</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">MyAppThread</span><span class="params">(Runnable r)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>(r, DEFAULT_NAME);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">MyAppThread</span><span class="params">(Runnable runnable, String name)</span> </span>&#123;</div><div class="line">		<span class="comment">// 为自定义的Thread类指定线程名称</span></div><div class="line">		<span class="keyword">super</span>(runnable, name + <span class="string">"-"</span> + created.incrementAndGet());</div><div class="line">		<span class="comment">// 设置UncaughtExceptionHandler. UncaughtExceptionHandler的uncaughtException方法将在线程运行中抛出未捕获异常时由系统调用</span></div><div class="line">		setUncaughtExceptionHandler(<span class="keyword">new</span> Thread.UncaughtExceptionHandler() &#123;</div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">uncaughtException</span><span class="params">(Thread t, Throwable e)</span> </span>&#123;</div><div class="line">				log.log(Level.SEVERE, <span class="string">"UNCAUGHT in thread "</span> + t.getName(), e);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 复制debug标志以确保一致的值。。。？ </span></div><div class="line">		<span class="keyword">boolean</span> debug = debugLifecycle;</div><div class="line">		<span class="keyword">if</span> (debug)</div><div class="line">			log.log(Level.FINE, <span class="string">"Created "</span> + getName());</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			alive.incrementAndGet();</div><div class="line">			<span class="keyword">super</span>.run();</div><div class="line">		&#125; <span class="keyword">finally</span> &#123;</div><div class="line">			alive.decrementAndGet();</div><div class="line">			<span class="keyword">if</span> (debug)</div><div class="line">				log.log(Level.FINE, <span class="string">"Exiting "</span> + getName());</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getThreadsCreated</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> created.get();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getThreadsAlive</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> alive.get();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">getDebug</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> debugLifecycle;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDebug</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>&#123;</div><div class="line">		debugLifecycle = b;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="在调用构造函数后再设置ThreadPoolExecutor"><a href="#在调用构造函数后再设置ThreadPoolExecutor" class="headerlink" title="在调用构造函数后再设置ThreadPoolExecutor"></a>在调用构造函数后再设置ThreadPoolExecutor</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ExecutorService exec = Executors.newCachedThreadPool();</div><div class="line"><span class="keyword">if</span>(exec <span class="keyword">instanceof</span> ThreadPoolExecutor)</div><div class="line">  ((ThreadPoolExecutor)exec).setCorePoolSize(<span class="number">10</span>);</div><div class="line"><span class="keyword">else</span></div><div class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"Error"</span>);</div></pre></td></tr></table></figure>
+<h3 id="扩展ThreadPoolExecutor"><a href="#扩展ThreadPoolExecutor" class="headerlink" title="扩展ThreadPoolExecutor"></a>扩展ThreadPoolExecutor</h3><p>ThreadPoolExecutor类提供了多个”钩子”方法, 以供其子类实现, 比如<code>beforeExecute</code>, <code>afterExecute</code>, <code>terminated</code>等. 所谓”钩子”是指基类预留的, 但是没有提供具体实现的方法, 其方法体为空. 子类可以根据需要为”钩子”提供具体实现。</p>
+<p><code>beforeExecute</code>和<code>afterExecute</code>方法分别在执行task前后调用<code>beforeExecute</code>和<code>afterExecute</code>方法可以用于记录日志, 统计数据等操作。</p>
+<p><code>terminated</code>方法在线程池被关闭后调用。 <code>terminated</code>方法可以用于释放线程池申请的资源。</p>
+<h3 id="递归算法的并行化"><a href="#递归算法的并行化" class="headerlink" title="递归算法的并行化"></a>递归算法的并行化</h3><p>如果<strong>循环</strong>中的迭代操作都是独立的，并且不需要等待所有的迭代操作都完成再继续执行，那么可以使用Executor将穿行循环转化为并行循环。</p>
+<p>如果需要提交一个任务集，并等待他们完成，那么可以使用<code>ExecutorService.invokeAll</code>，并且在所有任务都执行完成后调用<code>CompletionService</code>来获取结果。</p>
+<p>在递归中并行：将在节点上的计算与递归访问分开，将计算并行化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span>&lt;T&gt; <span class="keyword">void</span> <span class="title">parallelRecursive</span><span class="params">(<span class="keyword">final</span> Executor exec,</span></span></div><div class="line">                                 List&lt;Node&lt;T&gt;&gt; nodes,</div><div class="line">                                 <span class="keyword">final</span> Collection&lt;t&gt; results)&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">final</span> Node&lt;T&gt; n : nodes)&#123;</div><div class="line">      exec.execute(<span class="keyword">new</span> Runnable()&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">          results.add(n.compute());</div><div class="line">        &#125;</div><div class="line">      &#125;);</div><div class="line">      parallelRecursive(exec, n.getChildren(),results);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用sutdown和awaitTermination等方法等待所有的结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span>&lt;T&gt; Collection&lt;T&gt; <span class="title">getParallelResults</span><span class="params">(List&lt;Node&lt;T&gt;&gt; nodes)</span></span></div><div class="line">  <span class="keyword">throws</span> InterruptedExeception&#123;</div><div class="line">  ExectorService exec = Executors.newCachedThreadPool();</div><div class="line">  Queue&lt;T&gt; resultQueue = <span class="keyword">new</span> ConcurrentLinkedQueue&lt;T&gt;;</div><div class="line">  parallelRecursive(exec, nodes, resultQueue);</div><div class="line">  exec.shutdown();</div><div class="line">  exec.awaitTermination(Long.MAX_VALUE,TimeUnit.SECONDS);</div><div class="line">  <span class="keyword">return</span> resultQueue;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>shutdown</code>方法：平滑的关闭<code>ExecutorService</code>，当此方法被调用时，<code>ExecutorService</code>停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。</li>
+<li><code>awaitTermination</code>方法：接收人<code>timeout和</code> <code>TimeUnit</code>两个参数，用于设定超时时间及单位。当等待超过设定时间时，会监测<code>ExecutorService</code>是否已经关闭，若关闭则返回true，否则返回false。一般情况下会和<code>shutdown</code>方法组合使用。</li>
+</ul>
+<p><strong>P151的示例待看</strong></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://learning.com/2017/04/24/TensorFlow-touorials-rnn/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2281,209 +2487,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://learning.com/2017/04/07/TensorFlow入门——线性回归的例子/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Zhuo Jimmy">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="jlearning.cn">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/07/TensorFlow入门——线性回归的例子/" itemprop="url">
-                  TensorFlow入门——线性回归的例子
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-07T18:31:37+08:00">
-                2017-04-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/04/07/TensorFlow入门——线性回归的例子/" class="leancloud_visitors" data-flag-title="TensorFlow入门——线性回归的例子">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>翻译自<a href="https://www.tensorflow.org/get_started/get_started" target="_blank" rel="external">Getting Started With TensorFlow</a> </p>
-<p>TensorFlow提供很多API，低级API<code>TensorFlow Core</code>提供完整的程序控制。向机器学习研究者和 其他想对自己的模型有良好控制的人推荐<code>TensorFlow Core</code>。高级API是在<code>Tensorflow Core</code>的上层上建立的。高级API比<code>TensorFlow Core</code>学习和使用都要简单。而且，高级API让重复性的任务更简单，在不同的用户手中更一致。高级API像<code>tf.contrib.learn</code>帮助你管理数据集，估计量（estimators），训练和推理（inference）。注意，一些高级API名字中带有<code>contrib</code>的仍在开发中，<code>contrib</code>方法可能会在后来的版本中弃用。</p>
-<h2 id="Tensors"><a href="#Tensors" class="headerlink" title="Tensors"></a>Tensors</h2><p>TensorFlow里的核心数据元素是<code>tesnor</code>。一个<code>tensor</code>包含一个任何维度数组形式的原值的集合。<code>tensor</code>的<code>rank</code>是维度的数目。下面上一些例子：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">3</span> <span class="comment"># a rank 0 tensor; this is a (scalar)标量 with shape []</span></div><div class="line">[<span class="number">1.</span> ,<span class="number">2.</span>, <span class="number">3.</span>] <span class="comment"># a rank 1 tensor; this is a vector with shape [3]</span></div><div class="line">[[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>], [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]] <span class="comment"># a rank 2 tensor; a matrix with shape [2, 3]</span></div><div class="line">[[[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]], [[<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>]]] <span class="comment"># a rank 3 tensor with shape [2, 1, 3]</span></div></pre></td></tr></table></figure>
-<h2 id="TensorFlow-Core-教程"><a href="#TensorFlow-Core-教程" class="headerlink" title="TensorFlow Core 教程"></a>TensorFlow Core 教程</h2><h3 id="Importing-TensorFlow"><a href="#Importing-TensorFlow" class="headerlink" title="Importing TensorFlow"></a>Importing TensorFlow</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div></pre></td></tr></table></figure>
-<p>导入TensorFlow的所有classes，methods，symbols</p>
-<h3 id="The-Computational-Graph"><a href="#The-Computational-Graph" class="headerlink" title="The Computational Graph"></a>The Computational Graph</h3><p>你可以把TensorFlow Core程序看成是两段的集合：</p>
-<ol>
-<li>建立计算图</li>
-<li>运行计算图</li>
-</ol>
-<p>计算图（Computational Graph）是排列成图节点的一系列操作。每个节点将零个或多个tensor作为输入，产生一个tensor作为输出。constant是其中一种节点，它没有输入，输出一个内部储存的值。创建两个浮点数Tensors，<code>node1</code>和<code>node2</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">node1 = tf.constant(<span class="number">3.0</span>, tf.float32)</div><div class="line">node2 = tf.constant(<span class="number">4.0</span>) <span class="comment"># also tf.float32 implicitly</span></div><div class="line">print(node1, node2)</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Tensor(<span class="string">"Const:0"</span>, shape=(), dtype=float32) Tensor(<span class="string">"Const_1:0"</span>, shape=(), dtype=float32)</div></pre></td></tr></table></figure>
-<p>并没有输出3.0和4.0。因为他们是节点（node），当我们evaluate时，会分别产生3.0和4.0。要想evaluate这些节点，我们必须使用session运行计算图。一个session内部封装了TensorFlow运行时刻的控制和状态。</p>
-<p>下面的代码创建了一个<code>Session</code>对象，我们调用他的<code>run</code>方法去运行。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sess = tf.Session()</div><div class="line">print(sess.run([node1, node2]))</div></pre></td></tr></table></figure>
-<p>得到</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="number">3.0</span>,<span class="number">4.0</span>]</div></pre></td></tr></table></figure>
-<p><strong>我运行还会出现很多错误：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; node1 = tf.constant(3.0,tf.float32)</div><div class="line">&gt;&gt;&gt; sess = tf.Session()</div><div class="line">&gt;&gt;&gt; print(sess.run(node1))</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;BestSplits&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: BestSplits</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;CountExtremelyRandomStats&quot; device_t</div><div class="line">ype: &quot;CPU&quot;&apos;) for unknown op: CountExtremelyRandomStats</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;FinishedNodes&quot; device_type: &quot;CPU&quot;&apos;)</div><div class="line"> for unknown op: FinishedNodes</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;GrowTree&quot; device_type: &quot;CPU&quot;&apos;) for</div><div class="line">unknown op: GrowTree</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;ReinterpretStringToFloat&quot; device_ty</div><div class="line">pe: &quot;CPU&quot;&apos;) for unknown op: ReinterpretStringToFloat</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;SampleInputs&quot; device_type: &quot;CPU&quot;&apos;)</div><div class="line">for unknown op: SampleInputs</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;ScatterAddNdim&quot; device_type: &quot;CPU&quot;&apos;</div><div class="line">) for unknown op: ScatterAddNdim</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TopNInsert&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: TopNInsert</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TopNRemove&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: TopNRemove</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TreePredictions&quot; device_type: &quot;CPU&quot;</div><div class="line">&apos;) for unknown op: TreePredictions</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;UpdateFertileSlots&quot; device_type: &quot;C</div><div class="line">PU&quot;&apos;) for unknown op: UpdateFertileSlots</div><div class="line">3.0</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
-<p>待搞明白。</p>
-<p>我们可以建立更复杂的计算通过组合<code>Tensor</code>节点和操作（操作也是节点）。例如，我们可以把我们的两个常量节点相加，产生一个新的图（Graph）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">node3 = tf.add(node1, node2)</div><div class="line">print(<span class="string">"node3: "</span>, node3)</div><div class="line">print(<span class="string">"sess.run(node3): "</span>,sess.run(node3))</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node3:  Tensor(<span class="string">"Add_2:0"</span>, shape=(), dtype=float32)</div><div class="line">sess.run(node3):  <span class="number">7.0</span></div></pre></td></tr></table></figure>
-<p>TensorFlow 提供一个使用的TensorBoard可以展示计算图的图片。<img src="https://www.tensorflow.org/images/getting_started_add.png" alt="TensorBoard screenshot"></p>
-<p>目前，图片没有特别英吹思婷，因为它经常产生恒定的结果。图可以使用参数表示外部的输入，就像<code>placeholders</code>。一个<code>placeholder</code>是一个后面会提供值的promise。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a = tf.placeholder(tf.float32)</div><div class="line">b = tf.placeholder(tf.float32)</div><div class="line">adder_node = a + b  <span class="comment"># + provides a shortcut for tf.add(a, b)</span></div></pre></td></tr></table></figure>
-<p>我们可以使用多个输入evaluate这个graph，通过使用feed_dict参数为这些placeholders提供常量去specifty Tensors。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(sess.run(adder_node, &#123;a: <span class="number">3</span>, b:<span class="number">4.5</span>&#125;))</div><div class="line">print(sess.run(adder_node, &#123;a: [<span class="number">1</span>,<span class="number">3</span>], b: [<span class="number">2</span>, <span class="number">4</span>]&#125;))</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">7.5</span></div><div class="line">[ <span class="number">3.</span>  <span class="number">7.</span>]</div></pre></td></tr></table></figure>
-<p>在机器学习中，我们希望模型可以有任意输入。为了让模型可以训练，我们需要修改图去从相同的输入得到新的输出。<code>Variables</code>允许我们为图添加可训练的参数。他们由初始值和类型构成。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">W = tf.Variable([<span class="number">.3</span>], tf.float32)</div><div class="line">b = tf.Variable([<span class="number">-.3</span>], tf.float32)</div><div class="line">x = tf.placeholder(tf.float32)</div><div class="line">linear_model = W * x + b</div></pre></td></tr></table></figure>
-<p><code>variables</code>不会在你使用<code>tf.Variable</code>的时候初始化。你必须明确的使用下面的操作去初始化所有的变量：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">init = tf.global_variables_initializer()</div><div class="line">sess.run(init)</div></pre></td></tr></table></figure>
-<p><code>init</code>是TensorFlow子图中初始化所有全局变量的handle，一直到我们调用<code>sess.run</code>之前，这些变量都是未初始化的状态。</p>
-<p>我们可以同时使用多个X的值计算(evaluate) <code>linear_model</code> ：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(sess.run(linear_model, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;))</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[ <span class="number">0.</span>          <span class="number">0.30000001</span>  <span class="number">0.60000002</span>  <span class="number">0.90000004</span>]</div></pre></td></tr></table></figure>
-<p>我们使用标准的线性回归损失模型：计算当前预测值和实际值的平方和。<code>linear_model - y</code>。我们调用<code>tf.quare</code>，然后使用<code>tf.reduce_sum</code>相加。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">y = tf.placeholder(tf.float32)</div><div class="line">squared_deltas = tf.square(linear_model - y)</div><div class="line">loss = tf.reduce_sum(squared_deltas)</div><div class="line">print(sess.run(loss, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;))</div></pre></td></tr></table></figure>
-<p>计算出损失值：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">23.66</span></div></pre></td></tr></table></figure>
-<p>变量以<code>tf.Variable</code>的值初始化，可以通过<code>tf.assign</code>操作改变。比如<code>W=-1,b=1</code>是模型的最佳参数，我们可以通过以下改变W和b的值：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">fixW = tf.assign(W, [<span class="number">-1.</span>])</div><div class="line">fixb = tf.assign(b, [<span class="number">1.</span>])</div><div class="line">sess.run([fixW, fixb])</div><div class="line">print(sess.run(loss, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;))</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">0.0</span></div></pre></td></tr></table></figure>
-<p>下面展示如何自动的找到模型的最佳参数。</p>
-<h2 id="tf-train-API"><a href="#tf-train-API" class="headerlink" title="tf.train API"></a>tf.train API</h2><p>TensorFlow提供<code>optimizers</code>可以缓慢的改变变量，为了最小化损失函数。最简单的最优化算法是梯度下降法。它根据参数对于损失函数导数的大小改变每个参数。通常，计算符号求导很容易出错，而且没意思。所以，TensorFlow可以使用函数<code>tf.gradients</code>自动的求的导数，只要根据模型的描述。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">train = optimizer.minimize(loss)</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sess.run(init) <span class="comment"># reset values to incorrect defaults.</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">  sess.run(train, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;)</div><div class="line"></div><div class="line">print(sess.run([W, b]))</div></pre></td></tr></table></figure>
-<p>最终的模型参数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[array([<span class="number">-0.9999969</span>], dtype=float32), array([ <span class="number">0.99999082</span>],</div><div class="line"> dtype=float32)]</div></pre></td></tr></table></figure>
-<p>TensorFlow提供常见模式、结构、功能的更高级抽象。下一节学习如何使用这些。</p>
-<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line"><span class="comment"># Model parameters</span></div><div class="line">W = tf.Variable([<span class="number">.3</span>], tf.float32)</div><div class="line">b = tf.Variable([<span class="number">-.3</span>], tf.float32)</div><div class="line"><span class="comment"># Model input and output</span></div><div class="line">x = tf.placeholder(tf.float32)</div><div class="line">linear_model = W * x + b</div><div class="line">y = tf.placeholder(tf.float32)</div><div class="line"><span class="comment"># loss</span></div><div class="line">loss = tf.reduce_sum(tf.square(linear_model - y)) <span class="comment"># sum of the squares</span></div><div class="line"><span class="comment"># optimizer</span></div><div class="line">optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">train = optimizer.minimize(loss)</div><div class="line"><span class="comment"># training data</span></div><div class="line">x_train = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line">y_train = [<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]</div><div class="line"><span class="comment"># training loop</span></div><div class="line">init = tf.global_variables_initializer()</div><div class="line">sess = tf.Session()</div><div class="line">sess.run(init) <span class="comment"># reset values to wrong</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">  sess.run(train, &#123;x:x_train, y:y_train&#125;)</div><div class="line"></div><div class="line"><span class="comment"># evaluate training accuracy</span></div><div class="line">curr_W, curr_b, curr_loss  = sess.run([W, b, loss], &#123;x:x_train, y:y_train&#125;)</div><div class="line">print(<span class="string">"W: %s b: %s loss: %s"</span>%(curr_W, curr_b, curr_loss))</div></pre></td></tr></table></figure>
-<h2 id="tf-contrib-learn"><a href="#tf-contrib-learn" class="headerlink" title="tf.contrib.learn"></a>tf.contrib.learn</h2><p><code>tf.contrib.learn</code>是高级TensorFlow包，简化了机器学习的机制，包括：</p>
-<ul>
-<li>运行训练循环</li>
-<li>运行评价循环</li>
-<li>管理数据集</li>
-<li>管理输入（feeding？）</li>
-</ul>
-<p>tf.contrib.learn定义了很多的常见模型</p>
-<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>tf.contrib.learn</code>简化线性回归：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="comment"># NumPy 常常被用来加载、操作、预处理数据</span></div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line"><span class="comment"># 声明特征List. 我们只有一个实值（real-valued）特征. There are many other types of columns that are more complicated and useful.</span></div><div class="line">features = [tf.contrib.layers.real_valued_column(<span class="string">"x"</span>, dimension=<span class="number">1</span>)]</div><div class="line"></div><div class="line"><span class="comment"># estimator在前端调用训练（fitting）和评价（ingerence）.有很多事先定义好的类型，比如说线性回归，罗杰斯特回归，线性分类，罗杰斯特分类，和很多神经网络分类和回归. 下面的代码提供一个线性回归estimator。</span></div><div class="line">estimator = tf.contrib.learn.LinearRegressor(feature_columns=features)</div><div class="line"></div><div class="line"><span class="comment"># Tensorflow提供了很多有用的方法读取和建立数据集. 这里我们使用`numpy_input_fn`.我们需要告诉函数，我们需要多少数据batches（num_epochs）和每个batch多大.</span></div><div class="line">x = np.array([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>])</div><div class="line">y = np.array([<span class="number">0.</span>, <span class="number">-1.</span>, <span class="number">-2.</span>, <span class="number">-3.</span>])</div><div class="line"><span class="comment">#这里的num_epochs，和下面的steps是不是要一致？</span></div><div class="line">input_fn = tf.contrib.learn.io.numpy_input_fn(&#123;<span class="string">"x"</span>:x&#125;, y, batch_size=<span class="number">4</span>,</div><div class="line">                                              num_epochs=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment">#我们可以调用1000次训练步骤通过使用'fit'方法，然后输入训练数据集.</span></div><div class="line">estimator.fit(input_fn=input_fn, steps=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment">#这里我们评价我们模型有多么合适，在一个实际例子中，我们使用分别评价(separate validation)和测试数据集去避免过拟合.</span></div><div class="line">estimator.evaluate(input_fn=input_fn)</div></pre></td></tr></table></figure>
-<p>疑惑：separate validation?  num_epochs?</p>
-<h3 id="一个自定义模型"><a href="#一个自定义模型" class="headerlink" title="一个自定义模型"></a>一个自定义模型</h3><p><code>tf.contrib.learn</code>不会把你限制在这些预先定义的模型当中。假设我们想创建一个TensorFlow没有实现的自定义模型，我们仍然可以保持<code>tf.contrin.learn</code>对于数据集、输入(feeding)、训练的高度抽象。我们下面通过使用低级TensorFlowAPI来实现线性回归。</p>
-<p>使用<code>tf.contrib.learn</code>自定义一个模型，我们需要使用<code>tf.contrib.learn.estimator</code>。<code>tf.contrib.learn.LinearRegressor</code>实际上是<code>tf.contrib.learn.Estimator</code>的一个子集。我们向提供<code>Estimator</code>一个函数 <code>model_fn</code>来告诉<code>tf.contrib.learn</code>要怎么样评价、预测、训练步数、损失函数。</p>
-<p>完整代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="comment"># Declare list of features, we only have one real-valued feature</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">model</span><span class="params">(features, labels, mode)</span>:</span></div><div class="line">  <span class="comment"># Build a linear model and predict values</span></div><div class="line">  W = tf.get_variable(<span class="string">"W"</span>, [<span class="number">1</span>], dtype=tf.float64)</div><div class="line">  b = tf.get_variable(<span class="string">"b"</span>, [<span class="number">1</span>], dtype=tf.float64)</div><div class="line">  y = W*features[<span class="string">'x'</span>] + b</div><div class="line">  <span class="comment"># Loss sub-graph</span></div><div class="line">  loss = tf.reduce_sum(tf.square(y - labels))</div><div class="line">  <span class="comment"># Training sub-graph</span></div><div class="line">  global_step = tf.train.get_global_step()</div><div class="line">  optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">  train = tf.group(optimizer.minimize(loss),</div><div class="line">                   tf.assign_add(global_step, <span class="number">1</span>))</div><div class="line">  <span class="comment"># ModelFnOps connects subgraphs we built to the</span></div><div class="line">  <span class="comment"># appropriate functionality.</span></div><div class="line">  <span class="keyword">return</span> tf.contrib.learn.ModelFnOps(</div><div class="line">      mode=mode, predictions=y,</div><div class="line">      loss=loss,</div><div class="line">      train_op=train)</div><div class="line"></div><div class="line">estimator = tf.contrib.learn.Estimator(model_fn=model)</div><div class="line"><span class="comment"># define our data set</span></div><div class="line">x = np.array([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>])</div><div class="line">y = np.array([<span class="number">0.</span>, <span class="number">-1.</span>, <span class="number">-2.</span>, <span class="number">-3.</span>])</div><div class="line">input_fn = tf.contrib.learn.io.numpy_input_fn(&#123;<span class="string">"x"</span>: x&#125;, y, <span class="number">4</span>, num_epochs=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment"># train</span></div><div class="line">estimator.fit(input_fn=input_fn, steps=<span class="number">1000</span>)</div><div class="line"><span class="comment"># evaluate our model</span></div><div class="line">print(estimator.evaluate(input_fn=input_fn, steps=<span class="number">10</span>))</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2524,7 +2532,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2541,7 +2549,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">48</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2573,11 +2581,11 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="https://www.douban.com/people/49178609/" target="_blank" title="douban">
+                <a href="https://www.douban.com/people/49178609/" target="_blank" title="����">
                   
                     <i class="fa fa-fw fa-globe"></i>
                   
-                  douban
+                  ����
                 </a>
               </span>
             

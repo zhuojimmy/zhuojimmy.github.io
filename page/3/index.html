@@ -286,6 +286,204 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://learning.com/2017/04/07/TensorFlow入门——线性回归的例子/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Zhuo Jimmy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="jlearning.cn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/07/TensorFlow入门——线性回归的例子/" itemprop="url">
+                  TensorFlow入门——线性回归的例子
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-07T18:31:37+08:00">
+                2017-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/04/07/TensorFlow入门——线性回归的例子/" class="leancloud_visitors" data-flag-title="TensorFlow入门——线性回归的例子">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>翻译自<a href="https://www.tensorflow.org/get_started/get_started" target="_blank" rel="external">Getting Started With TensorFlow</a> </p>
+<p>TensorFlow提供很多API，低级API<code>TensorFlow Core</code>提供完整的程序控制。向机器学习研究者和 其他想对自己的模型有良好控制的人推荐<code>TensorFlow Core</code>。高级API是在<code>Tensorflow Core</code>的上层上建立的。高级API比<code>TensorFlow Core</code>学习和使用都要简单。而且，高级API让重复性的任务更简单，在不同的用户手中更一致。高级API像<code>tf.contrib.learn</code>帮助你管理数据集，估计量（estimators），训练和推理（inference）。注意，一些高级API名字中带有<code>contrib</code>的仍在开发中，<code>contrib</code>方法可能会在后来的版本中弃用。</p>
+<h2 id="Tensors"><a href="#Tensors" class="headerlink" title="Tensors"></a>Tensors</h2><p>TensorFlow里的核心数据元素是<code>tesnor</code>。一个<code>tensor</code>包含一个任何维度数组形式的原值的集合。<code>tensor</code>的<code>rank</code>是维度的数目。下面上一些例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">3</span> <span class="comment"># a rank 0 tensor; this is a (scalar)标量 with shape []</span></div><div class="line">[<span class="number">1.</span> ,<span class="number">2.</span>, <span class="number">3.</span>] <span class="comment"># a rank 1 tensor; this is a vector with shape [3]</span></div><div class="line">[[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>], [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]] <span class="comment"># a rank 2 tensor; a matrix with shape [2, 3]</span></div><div class="line">[[[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]], [[<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>]]] <span class="comment"># a rank 3 tensor with shape [2, 1, 3]</span></div></pre></td></tr></table></figure>
+<h2 id="TensorFlow-Core-教程"><a href="#TensorFlow-Core-教程" class="headerlink" title="TensorFlow Core 教程"></a>TensorFlow Core 教程</h2><h3 id="Importing-TensorFlow"><a href="#Importing-TensorFlow" class="headerlink" title="Importing TensorFlow"></a>Importing TensorFlow</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div></pre></td></tr></table></figure>
+<p>导入TensorFlow的所有classes，methods，symbols</p>
+<h3 id="The-Computational-Graph"><a href="#The-Computational-Graph" class="headerlink" title="The Computational Graph"></a>The Computational Graph</h3><p>你可以把TensorFlow Core程序看成是两段的集合：</p>
+<ol>
+<li>建立计算图</li>
+<li>运行计算图</li>
+</ol>
+<p>计算图（Computational Graph）是排列成图节点的一系列操作。每个节点将零个或多个tensor作为输入，产生一个tensor作为输出。constant是其中一种节点，它没有输入，输出一个内部储存的值。创建两个浮点数Tensors，<code>node1</code>和<code>node2</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">node1 = tf.constant(<span class="number">3.0</span>, tf.float32)</div><div class="line">node2 = tf.constant(<span class="number">4.0</span>) <span class="comment"># also tf.float32 implicitly</span></div><div class="line">print(node1, node2)</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Tensor(<span class="string">"Const:0"</span>, shape=(), dtype=float32) Tensor(<span class="string">"Const_1:0"</span>, shape=(), dtype=float32)</div></pre></td></tr></table></figure>
+<p>并没有输出3.0和4.0。因为他们是节点（node），当我们evaluate时，会分别产生3.0和4.0。要想evaluate这些节点，我们必须使用session运行计算图。一个session内部封装了TensorFlow运行时刻的控制和状态。</p>
+<p>下面的代码创建了一个<code>Session</code>对象，我们调用他的<code>run</code>方法去运行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sess = tf.Session()</div><div class="line">print(sess.run([node1, node2]))</div></pre></td></tr></table></figure>
+<p>得到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="number">3.0</span>,<span class="number">4.0</span>]</div></pre></td></tr></table></figure>
+<p><strong>我运行还会出现很多错误：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; node1 = tf.constant(3.0,tf.float32)</div><div class="line">&gt;&gt;&gt; sess = tf.Session()</div><div class="line">&gt;&gt;&gt; print(sess.run(node1))</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;BestSplits&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: BestSplits</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;CountExtremelyRandomStats&quot; device_t</div><div class="line">ype: &quot;CPU&quot;&apos;) for unknown op: CountExtremelyRandomStats</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;FinishedNodes&quot; device_type: &quot;CPU&quot;&apos;)</div><div class="line"> for unknown op: FinishedNodes</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;GrowTree&quot; device_type: &quot;CPU&quot;&apos;) for</div><div class="line">unknown op: GrowTree</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;ReinterpretStringToFloat&quot; device_ty</div><div class="line">pe: &quot;CPU&quot;&apos;) for unknown op: ReinterpretStringToFloat</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;SampleInputs&quot; device_type: &quot;CPU&quot;&apos;)</div><div class="line">for unknown op: SampleInputs</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;ScatterAddNdim&quot; device_type: &quot;CPU&quot;&apos;</div><div class="line">) for unknown op: ScatterAddNdim</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TopNInsert&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: TopNInsert</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TopNRemove&quot; device_type: &quot;CPU&quot;&apos;) fo</div><div class="line">r unknown op: TopNRemove</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;TreePredictions&quot; device_type: &quot;CPU&quot;</div><div class="line">&apos;) for unknown op: TreePredictions</div><div class="line">E c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core</div><div class="line">\framework\op_kernel.cc:943] OpKernel (&apos;op: &quot;UpdateFertileSlots&quot; device_type: &quot;C</div><div class="line">PU&quot;&apos;) for unknown op: UpdateFertileSlots</div><div class="line">3.0</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+<p>待搞明白。</p>
+<p>我们可以建立更复杂的计算通过组合<code>Tensor</code>节点和操作（操作也是节点）。例如，我们可以把我们的两个常量节点相加，产生一个新的图（Graph）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">node3 = tf.add(node1, node2)</div><div class="line">print(<span class="string">"node3: "</span>, node3)</div><div class="line">print(<span class="string">"sess.run(node3): "</span>,sess.run(node3))</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node3:  Tensor(<span class="string">"Add_2:0"</span>, shape=(), dtype=float32)</div><div class="line">sess.run(node3):  <span class="number">7.0</span></div></pre></td></tr></table></figure>
+<p>TensorFlow 提供一个使用的TensorBoard可以展示计算图的图片。<img src="https://www.tensorflow.org/images/getting_started_add.png" alt="TensorBoard screenshot"></p>
+<p>目前，图片没有特别英吹思婷，因为它经常产生恒定的结果。图可以使用参数表示外部的输入，就像<code>placeholders</code>。一个<code>placeholder</code>是一个后面会提供值的promise。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a = tf.placeholder(tf.float32)</div><div class="line">b = tf.placeholder(tf.float32)</div><div class="line">adder_node = a + b  <span class="comment"># + provides a shortcut for tf.add(a, b)</span></div></pre></td></tr></table></figure>
+<p>我们可以使用多个输入evaluate这个graph，通过使用feed_dict参数为这些placeholders提供常量去specifty Tensors。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(sess.run(adder_node, &#123;a: <span class="number">3</span>, b:<span class="number">4.5</span>&#125;))</div><div class="line">print(sess.run(adder_node, &#123;a: [<span class="number">1</span>,<span class="number">3</span>], b: [<span class="number">2</span>, <span class="number">4</span>]&#125;))</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">7.5</span></div><div class="line">[ <span class="number">3.</span>  <span class="number">7.</span>]</div></pre></td></tr></table></figure>
+<p>在机器学习中，我们希望模型可以有任意输入。为了让模型可以训练，我们需要修改图去从相同的输入得到新的输出。<code>Variables</code>允许我们为图添加可训练的参数。他们由初始值和类型构成。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">W = tf.Variable([<span class="number">.3</span>], tf.float32)</div><div class="line">b = tf.Variable([<span class="number">-.3</span>], tf.float32)</div><div class="line">x = tf.placeholder(tf.float32)</div><div class="line">linear_model = W * x + b</div></pre></td></tr></table></figure>
+<p><code>variables</code>不会在你使用<code>tf.Variable</code>的时候初始化。你必须明确的使用下面的操作去初始化所有的变量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">init = tf.global_variables_initializer()</div><div class="line">sess.run(init)</div></pre></td></tr></table></figure>
+<p><code>init</code>是TensorFlow子图中初始化所有全局变量的handle，一直到我们调用<code>sess.run</code>之前，这些变量都是未初始化的状态。</p>
+<p>我们可以同时使用多个X的值计算(evaluate) <code>linear_model</code> ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(sess.run(linear_model, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;))</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[ <span class="number">0.</span>          <span class="number">0.30000001</span>  <span class="number">0.60000002</span>  <span class="number">0.90000004</span>]</div></pre></td></tr></table></figure>
+<p>我们使用标准的线性回归损失模型：计算当前预测值和实际值的平方和。<code>linear_model - y</code>。我们调用<code>tf.quare</code>，然后使用<code>tf.reduce_sum</code>相加。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">y = tf.placeholder(tf.float32)</div><div class="line">squared_deltas = tf.square(linear_model - y)</div><div class="line">loss = tf.reduce_sum(squared_deltas)</div><div class="line">print(sess.run(loss, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;))</div></pre></td></tr></table></figure>
+<p>计算出损失值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">23.66</span></div></pre></td></tr></table></figure>
+<p>变量以<code>tf.Variable</code>的值初始化，可以通过<code>tf.assign</code>操作改变。比如<code>W=-1,b=1</code>是模型的最佳参数，我们可以通过以下改变W和b的值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">fixW = tf.assign(W, [<span class="number">-1.</span>])</div><div class="line">fixb = tf.assign(b, [<span class="number">1.</span>])</div><div class="line">sess.run([fixW, fixb])</div><div class="line">print(sess.run(loss, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;))</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">0.0</span></div></pre></td></tr></table></figure>
+<p>下面展示如何自动的找到模型的最佳参数。</p>
+<h2 id="tf-train-API"><a href="#tf-train-API" class="headerlink" title="tf.train API"></a>tf.train API</h2><p>TensorFlow提供<code>optimizers</code>可以缓慢的改变变量，为了最小化损失函数。最简单的最优化算法是梯度下降法。它根据参数对于损失函数导数的大小改变每个参数。通常，计算符号求导很容易出错，而且没意思。所以，TensorFlow可以使用函数<code>tf.gradients</code>自动的求的导数，只要根据模型的描述。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">train = optimizer.minimize(loss)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sess.run(init) <span class="comment"># reset values to incorrect defaults.</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">  sess.run(train, &#123;x:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], y:[<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]&#125;)</div><div class="line"></div><div class="line">print(sess.run([W, b]))</div></pre></td></tr></table></figure>
+<p>最终的模型参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[array([<span class="number">-0.9999969</span>], dtype=float32), array([ <span class="number">0.99999082</span>],</div><div class="line"> dtype=float32)]</div></pre></td></tr></table></figure>
+<p>TensorFlow提供常见模式、结构、功能的更高级抽象。下一节学习如何使用这些。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line"><span class="comment"># Model parameters</span></div><div class="line">W = tf.Variable([<span class="number">.3</span>], tf.float32)</div><div class="line">b = tf.Variable([<span class="number">-.3</span>], tf.float32)</div><div class="line"><span class="comment"># Model input and output</span></div><div class="line">x = tf.placeholder(tf.float32)</div><div class="line">linear_model = W * x + b</div><div class="line">y = tf.placeholder(tf.float32)</div><div class="line"><span class="comment"># loss</span></div><div class="line">loss = tf.reduce_sum(tf.square(linear_model - y)) <span class="comment"># sum of the squares</span></div><div class="line"><span class="comment"># optimizer</span></div><div class="line">optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">train = optimizer.minimize(loss)</div><div class="line"><span class="comment"># training data</span></div><div class="line">x_train = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line">y_train = [<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-2</span>,<span class="number">-3</span>]</div><div class="line"><span class="comment"># training loop</span></div><div class="line">init = tf.global_variables_initializer()</div><div class="line">sess = tf.Session()</div><div class="line">sess.run(init) <span class="comment"># reset values to wrong</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">  sess.run(train, &#123;x:x_train, y:y_train&#125;)</div><div class="line"></div><div class="line"><span class="comment"># evaluate training accuracy</span></div><div class="line">curr_W, curr_b, curr_loss  = sess.run([W, b, loss], &#123;x:x_train, y:y_train&#125;)</div><div class="line">print(<span class="string">"W: %s b: %s loss: %s"</span>%(curr_W, curr_b, curr_loss))</div></pre></td></tr></table></figure>
+<h2 id="tf-contrib-learn"><a href="#tf-contrib-learn" class="headerlink" title="tf.contrib.learn"></a>tf.contrib.learn</h2><p><code>tf.contrib.learn</code>是高级TensorFlow包，简化了机器学习的机制，包括：</p>
+<ul>
+<li>运行训练循环</li>
+<li>运行评价循环</li>
+<li>管理数据集</li>
+<li>管理输入（feeding？）</li>
+</ul>
+<p>tf.contrib.learn定义了很多的常见模型</p>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>tf.contrib.learn</code>简化线性回归：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="comment"># NumPy 常常被用来加载、操作、预处理数据</span></div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line"><span class="comment"># 声明特征List. 我们只有一个实值（real-valued）特征. There are many other types of columns that are more complicated and useful.</span></div><div class="line">features = [tf.contrib.layers.real_valued_column(<span class="string">"x"</span>, dimension=<span class="number">1</span>)]</div><div class="line"></div><div class="line"><span class="comment"># estimator在前端调用训练（fitting）和评价（ingerence）.有很多事先定义好的类型，比如说线性回归，罗杰斯特回归，线性分类，罗杰斯特分类，和很多神经网络分类和回归. 下面的代码提供一个线性回归estimator。</span></div><div class="line">estimator = tf.contrib.learn.LinearRegressor(feature_columns=features)</div><div class="line"></div><div class="line"><span class="comment"># Tensorflow提供了很多有用的方法读取和建立数据集. 这里我们使用`numpy_input_fn`.我们需要告诉函数，我们需要多少数据batches（num_epochs）和每个batch多大.</span></div><div class="line">x = np.array([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>])</div><div class="line">y = np.array([<span class="number">0.</span>, <span class="number">-1.</span>, <span class="number">-2.</span>, <span class="number">-3.</span>])</div><div class="line"><span class="comment">#这里的num_epochs，和下面的steps是不是要一致？</span></div><div class="line">input_fn = tf.contrib.learn.io.numpy_input_fn(&#123;<span class="string">"x"</span>:x&#125;, y, batch_size=<span class="number">4</span>,</div><div class="line">                                              num_epochs=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment">#我们可以调用1000次训练步骤通过使用'fit'方法，然后输入训练数据集.</span></div><div class="line">estimator.fit(input_fn=input_fn, steps=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment">#这里我们评价我们模型有多么合适，在一个实际例子中，我们使用分别评价(separate validation)和测试数据集去避免过拟合.</span></div><div class="line">estimator.evaluate(input_fn=input_fn)</div></pre></td></tr></table></figure>
+<p>疑惑：separate validation?  num_epochs?</p>
+<h3 id="一个自定义模型"><a href="#一个自定义模型" class="headerlink" title="一个自定义模型"></a>一个自定义模型</h3><p><code>tf.contrib.learn</code>不会把你限制在这些预先定义的模型当中。假设我们想创建一个TensorFlow没有实现的自定义模型，我们仍然可以保持<code>tf.contrin.learn</code>对于数据集、输入(feeding)、训练的高度抽象。我们下面通过使用低级TensorFlowAPI来实现线性回归。</p>
+<p>使用<code>tf.contrib.learn</code>自定义一个模型，我们需要使用<code>tf.contrib.learn.estimator</code>。<code>tf.contrib.learn.LinearRegressor</code>实际上是<code>tf.contrib.learn.Estimator</code>的一个子集。我们向提供<code>Estimator</code>一个函数 <code>model_fn</code>来告诉<code>tf.contrib.learn</code>要怎么样评价、预测、训练步数、损失函数。</p>
+<p>完整代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="comment"># Declare list of features, we only have one real-valued feature</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">model</span><span class="params">(features, labels, mode)</span>:</span></div><div class="line">  <span class="comment"># Build a linear model and predict values</span></div><div class="line">  W = tf.get_variable(<span class="string">"W"</span>, [<span class="number">1</span>], dtype=tf.float64)</div><div class="line">  b = tf.get_variable(<span class="string">"b"</span>, [<span class="number">1</span>], dtype=tf.float64)</div><div class="line">  y = W*features[<span class="string">'x'</span>] + b</div><div class="line">  <span class="comment"># Loss sub-graph</span></div><div class="line">  loss = tf.reduce_sum(tf.square(y - labels))</div><div class="line">  <span class="comment"># Training sub-graph</span></div><div class="line">  global_step = tf.train.get_global_step()</div><div class="line">  optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>)</div><div class="line">  train = tf.group(optimizer.minimize(loss),</div><div class="line">                   tf.assign_add(global_step, <span class="number">1</span>))</div><div class="line">  <span class="comment"># ModelFnOps connects subgraphs we built to the</span></div><div class="line">  <span class="comment"># appropriate functionality.</span></div><div class="line">  <span class="keyword">return</span> tf.contrib.learn.ModelFnOps(</div><div class="line">      mode=mode, predictions=y,</div><div class="line">      loss=loss,</div><div class="line">      train_op=train)</div><div class="line"></div><div class="line">estimator = tf.contrib.learn.Estimator(model_fn=model)</div><div class="line"><span class="comment"># define our data set</span></div><div class="line">x = np.array([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>])</div><div class="line">y = np.array([<span class="number">0.</span>, <span class="number">-1.</span>, <span class="number">-2.</span>, <span class="number">-3.</span>])</div><div class="line">input_fn = tf.contrib.learn.io.numpy_input_fn(&#123;<span class="string">"x"</span>: x&#125;, y, <span class="number">4</span>, num_epochs=<span class="number">1000</span>)</div><div class="line"></div><div class="line"><span class="comment"># train</span></div><div class="line">estimator.fit(input_fn=input_fn, steps=<span class="number">1000</span>)</div><div class="line"><span class="comment"># evaluate our model</span></div><div class="line">print(estimator.evaluate(input_fn=input_fn, steps=<span class="number">10</span>))</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://learning.com/2017/04/06/LeetCode-一种递归除方法/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1706,249 +1904,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://learning.com/2017/03/19/HeadFirst设计模式笔记/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Zhuo Jimmy">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="jlearning.cn">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="jlearning.cn" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/19/HeadFirst设计模式笔记/" itemprop="url">
-                  HeadFirst设计模式笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-19T17:29:55+08:00">
-                2017-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/19/HeadFirst设计模式笔记/" class="leancloud_visitors" data-flag-title="HeadFirst设计模式笔记">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>设计模式 : <em>从代码复用，到经验复用。</em></p>
-<h3 id="策略模式-Strategy"><a href="#策略模式-Strategy" class="headerlink" title="策略模式 Strategy"></a>策略模式 Strategy</h3><p><em>定义一系列的算法，把他们一个个封装起来，并且使他们可以相互替换。</em></p>
-<blockquote>
-<p><strong>多用组合，少用继承。</strong></p>
-<p><strong>针对接口编程，而不是针对实现编程。</strong></p>
-<p><strong>找出应用中可能需要变化的地方，把他们独立出来。</strong></p>
-</blockquote>
-<p>使用组合，将算法封装成类，更可以”在运行时动态地改变行为“。</p>
-<h3 id="观察者模式Observer"><a href="#观察者模式Observer" class="headerlink" title="观察者模式Observer"></a>观察者模式Observer</h3><p><em>定义了对象之间的一对多依赖，当一个对象改变状态时，他的所有依赖者都会受到通知并自动更新</em></p>
-<blockquote>
-<p><strong>交互对象之间的松耦合（让对象之间的互相依赖降到最低）</strong></p>
-</blockquote>
-<h3 id="装饰者模式Decorator"><a href="#装饰者模式Decorator" class="headerlink" title="装饰者模式Decorator"></a>装饰者模式Decorator</h3><p><em>动态的将责任附加到对象上。用于扩展功能，提供比继承更有弹性的替代方案。</em></p>
-<blockquote>
-<p><strong>类应该对扩展开放，对修改关闭。</strong></p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用继承达到“类型匹配”，而不是继承获得行</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CondimentDecorator</span> <span class="keyword">extends</span> <span class="title">Beverage</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getDescription</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="工厂模式Factory"><a href="#工厂模式Factory" class="headerlink" title="工厂模式Factory"></a>工厂模式Factory</h3><p><em>定义一个创建对象的接口，由子类决定要实例化的类是哪一个。</em></p>
-<blockquote>
-<p><strong>以来抽象，而不是依赖具体类。</strong>（依赖倒置原则）</p>
-<pre><code>1. 变量不可以持有具体类的引用
-2. 不要让类派生自具体类
-3. 不要覆盖基类中已实现的方法
-</code></pre></blockquote>
-<h3 id="抽象工厂模式AbstractFactory"><a href="#抽象工厂模式AbstractFactory" class="headerlink" title="抽象工厂模式AbstractFactory"></a>抽象工厂模式AbstractFactory</h3><p><em>提供一个借口，用于创建相关或依赖对象的家族，而不需要明确指定具体类。</em></p>
-<p>三种工厂模式的联系：所有的工厂都是用来封装对象的创建。</p>
-<table>
-<thead>
-<tr>
-<th>模式</th>
-<th>区别</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>简单工厂</td>
-<td>从固定工厂中，返回产品类。</td>
-</tr>
-<tr>
-<td>工厂模式</td>
-<td>从不同工厂中，返回不同的类。</td>
-</tr>
-<tr>
-<td>抽象工厂模式</td>
-<td>传入一个工厂作为参数，返回一簇类。</td>
-</tr>
-</tbody>
-</table>
-<h3 id="单例模式Singleton"><a href="#单例模式Singleton" class="headerlink" title="单例模式Singleton"></a>单例模式Singleton</h3><p><em>确保一个类只有一个实例，并提供全局访问点。</em></p>
-<p>双重检查加锁</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="comment">//volatile关键词确保当uniqueInstance变量被初始化成singleton实例时，多个线程正确的处理uniqueins</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton uniqueInstance;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (uniqueInstance == <span class="keyword">null</span>) &#123;</div><div class="line">			<span class="keyword">synchronized</span> (Singleton.class) &#123;</div><div class="line">				<span class="keyword">if</span> (uniqueInstance == <span class="keyword">null</span>) &#123;</div><div class="line">					uniqueInstance = <span class="keyword">new</span> Singleton();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> uniqueInstance;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h3><p><em>将“命令”封装成对象，以便使用不同请求、队列或者日志来参数或其他对象。</em></p>
-<p>把方法调用（method invocation）封装起来</p>
-<p>可以实现：记录日志，重复使用这些封装来实现撤销。</p>
-<p>对于更高级的应用，可以扩展应用到事务（transaction）处理中。</p>
-<h3 id="适配器模式和外观模式Facade"><a href="#适配器模式和外观模式Facade" class="headerlink" title="适配器模式和外观模式Facade"></a>适配器模式和外观模式Facade</h3><p><em>将一个类的接口，转换成客户期望的另一个接口。让原本接口不兼容的类可以合作无间</em></p>
-<p><em>外观模式：提供一个统一的接口，用来访问子系统中的一群接口。定义了一个高层接口，让子系统更容易使用。</em></p>
-<blockquote>
-<p>最少知识原则</p>
-<pre><code>1. 该对象本身
-2. 被当做方法的参数而传递进来的对象
-3. 此方法创建或实例化的任何对象
-4. 对象的任何组件（has a）
-</code></pre></blockquote>
-<p>如果某对象是调用其他方法的返回接口，不要调用该对象的方法。</p>
-<h3 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h3><p><em>在一个方法中定义一个算法的骨架，而将一些步骤延迟到子类中。模板方法使得之类可以在不改变算法结构的情况下，重新定义算法中的某些步骤。</em></p>
-<p>钩子：是一种方法，在抽象类中不做事情，或者做默认的事情。子类选择要不要覆盖。</p>
-<p>应用：排序，只需要implements comparable实现conpareTo方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//抽象类。包含了模板方法。任何步骤都可以是抽象的，由子类实现。</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CaffeineBeverage</span> </span>&#123;</div><div class="line">  </div><div class="line">	<span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">prepareRecipe</span><span class="params">()</span> </span>&#123;</div><div class="line">		boilWater();</div><div class="line">		brew();</div><div class="line">		pourInCup();</div><div class="line">		addCondiments();</div><div class="line">	&#125;</div><div class="line"> </div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span></span>;</div><div class="line">  </div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">addCondiments</span><span class="params">()</span></span>;</div><div class="line"> </div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">boilWater</span><span class="params">()</span> </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Boiling water"</span>);</div><div class="line">	&#125;</div><div class="line">  </div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">pourInCup</span><span class="params">()</span> </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Pouring into cup"</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>好莱坞原则：高层组件调用底层，底层组件不调用高层组件。</p>
-</blockquote>
-<h3 id="迭代器和组合模式"><a href="#迭代器和组合模式" class="headerlink" title="迭代器和组合模式"></a>迭代器和组合模式</h3><p>依赖于Iterator接口，实现hasNext(),next()方法。</p>
-<p><em>提供一种方法顺序访问一个聚合对象中的各个元素，而又不暴露其内部的表示。</em></p>
-<blockquote>
-<p>一个类应该只有一个起变化的原因</p>
-</blockquote>
-<p>组合模式（Composite Pattern）：</p>
-<p><em>允许你将对象组合成树形结构来表现“整体/部分”层次结构。组合能让客户以一致的方式处理个别对象以及对象组合。</em></p>
-<h3 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h3><p><em>允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。</em></p>
-<table>
-<thead>
-<tr>
-<th>状态模式</th>
-<th>策略模式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>context的行为随时可委托到这些状态对象中的一个。</td>
-<td>对于某个context对象来说，通常只有一个最适当的策略对象</td>
-</tr>
-</tbody>
-</table>
-<h3 id="代理模式△"><a href="#代理模式△" class="headerlink" title="代理模式△"></a>代理模式△</h3><p><em>为另一个对象提供一个替身或占位符以控制对这个对象的访问</em></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1989,7 +1949,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2006,7 +1966,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">48</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2038,11 +1998,11 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="https://www.douban.com/people/49178609/" target="_blank" title="douban">
+                <a href="https://www.douban.com/people/49178609/" target="_blank" title="����">
                   
                     <i class="fa fa-fw fa-globe"></i>
                   
-                  douban
+                  ����
                 </a>
               </span>
             
