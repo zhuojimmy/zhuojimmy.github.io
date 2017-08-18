@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="原创,Java,Java源码分析," />
+  <meta name="keywords" content="原创,Java,Java源码分析,HashMap," />
 
 
 
@@ -85,19 +85,22 @@
 
 
 <meta name="description" content="Java源码分析——HashMapHashMap使用一个的数组来保存不同散列值的key以及相应的value。在jkd1.8中，对于相同hashcode形成的bucket，不再按照唯一的链表存储，而是根据bucket的大小，超过一定限制之后将链表转换为红黑树来存储Map.Entry\。这样，HashMap的内部数据结构就是数组+链表+红黑树。
-类的结构：1public class HashMap&amp;l">
+jkd版本为1.8.0_05
+类的结构：1public">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java源码分析——HashMap">
 <meta property="og:url" content="http://learning.com/2017/08/17/java-source-code-hashmap/index.html">
 <meta property="og:site_name" content="jlearning.cn">
 <meta property="og:description" content="Java源码分析——HashMapHashMap使用一个的数组来保存不同散列值的key以及相应的value。在jkd1.8中，对于相同hashcode形成的bucket，不再按照唯一的链表存储，而是根据bucket的大小，超过一定限制之后将链表转换为红黑树来存储Map.Entry\。这样，HashMap的内部数据结构就是数组+链表+红黑树。
-类的结构：1public class HashMap&amp;l">
+jkd版本为1.8.0_05
+类的结构：1public">
 <meta property="og:image" content="http://img.blog.csdn.net/20170805180104619?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbG9naW5fc29uYXRh/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2017-08-17T14:55:57.962Z">
+<meta property="og:updated_time" content="2017-08-18T08:04:01.294Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java源码分析——HashMap">
 <meta name="twitter:description" content="Java源码分析——HashMapHashMap使用一个的数组来保存不同散列值的key以及相应的value。在jkd1.8中，对于相同hashcode形成的bucket，不再按照唯一的链表存储，而是根据bucket的大小，超过一定限制之后将链表转换为红黑树来存储Map.Entry\。这样，HashMap的内部数据结构就是数组+链表+红黑树。
-类的结构：1public class HashMap&amp;l">
+jkd版本为1.8.0_05
+类的结构：1public">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170805180104619?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbG9naW5fc29uYXRh/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -394,6 +397,7 @@
 
       
         <h2 id="Java源码分析——HashMap"><a href="#Java源码分析——HashMap" class="headerlink" title="Java源码分析——HashMap"></a>Java源码分析——HashMap</h2><p>HashMap使用一个的数组来保存不同散列值的key以及相应的value。在jkd1.8中，对于相同hashcode形成的bucket，不再按照唯一的链表存储，而是根据bucket的大小，超过一定限制之后将链表转换为红黑树来存储Map.Entry\<k,v\>。这样，HashMap的内部数据结构就是数组+链表+红黑树。</k,v\></p>
+<p>jkd版本为1.8.0_05</p>
 <h3 id="类的结构："><a href="#类的结构：" class="headerlink" title="类的结构："></a>类的结构：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">Serializable</span></span></div></pre></td></tr></table></figure>
 <p>一个不明白的地方：AbstractMap已经实现了Map接口，为什么HashMap还要继承AvstractMap之后实现Map。</p>
 <h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>HashMap的构造函数有多种重载的方式，这里只详细说明最重要，最复杂的一种：</p>
@@ -445,6 +449,8 @@
           
             <a href="/tags/Java源码分析/" rel="tag"># Java源码分析</a>
           
+            <a href="/tags/HashMap/" rel="tag"># HashMap</a>
+          
         </div>
       
 
@@ -461,6 +467,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/18/java-source-code-arraylist/" rel="prev" title="Java源码分析——ArrayList">
+                Java源码分析——ArrayList <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -530,7 +540,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -547,7 +557,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-count">51</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
